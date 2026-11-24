@@ -1,0 +1,34 @@
+---
+title: "10. Connections: identity providers and notifications"
+sidebar_label: "10. Connections: identity providers and notifications"
+---
+
+:::tip[🧭 Wayfinder step]
+
+[Customize notifications](https://thunderid.dev/docs/next/use-cases/b2c/build-notifications)
+
+:::
+
+A **connection** is ThunderID's configuration for reaching an outside system. It's a separate resource so several flows can use the same one. Flows are the main consumer: an app never points at a connection directly.
+
+| Kind | Types | Used by |
+| --- | --- | --- |
+| Identity providers | `google`, `github`, `oidc`, `oauth` | Social and federated sign-in executors |
+| SMS senders | `twilio`, `vonage`, `sms-gateway` | `SMSExecutor`, OTP |
+| Email providers <V2 /> | `email-smtp` | `EmailExecutor`: magic links, invites, recovery |
+| HTTP connections <V2 /> | `http` | `ExtensionExecutor` |
+| AuthZEN PDP <V2 /> | `authzen-pdp` | Resource servers that delegate decisions ([module 6](/docs/beginner/authorization)) |
+
+## Federation
+
+To let users sign in with Google: create the Google connection, add a Google sign-in step to a flow, and assign the flow to the app. When an outside identity arrives, ThunderID looks for a recorded link to a local user. With no link, it matches the connection's linking attributes against existing users. It never links on a matching attribute alone: the user first signs in to the matched account to prove they own it. Otherwise the flow's provisioning settings decide whether to create a new user.
+
+## Notifications
+
+OTPs, magic links, invitations and recovery links come from **notification templates** (per channel, `email` or `sms`, with translations and design tokens). There's no deployment-wide default sender: each email or SMS step in a flow names the provider it sends through.
+
+## 🧪 Lab
+
+Follow [Add Google](https://thunderid.dev/docs/next/guides/identity-providers/add-google) and [Connect an IdP to an application](https://thunderid.dev/docs/next/guides/identity-providers/connect-idp-to-application). Sign up with a password first, then sign in with Google using the same email, and watch the link prompt.
+
+Go deeper: [Identity providers](https://thunderid.dev/docs/next/guides/identity-providers/overview), [Link accounts](https://thunderid.dev/docs/next/guides/identity-providers/link-accounts), [Email providers](https://thunderid.dev/docs/next/guides/notifications/email-providers), [Notification templates](https://thunderid.dev/docs/next/guides/notifications/templates).

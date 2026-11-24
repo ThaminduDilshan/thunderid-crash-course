@@ -1,0 +1,31 @@
+---
+title: "19. Providers"
+sidebar_label: "19. Providers"
+---
+
+A provider is an interface the runtime (flows, OAuth, the Direct API) depends on instead of a concrete service. Most are declared in `backend/pkg/thunderidengine/providers/interface.go`. They exist for four reasons:
+
+- **Embedding:** an embedder of the engine supplies its own implementations.
+- **Extension points:** a deployment can swap one in config. Several have `default` and `disabled` implementations.
+- **Breaking import cycles:** a consumer defines a small interface and `servicemanager.go` injects the implementation, instead of importing a package above it.
+- **A privilege boundary:** the entity provider reads with system authority but runs writes as the caller.
+
+## The ones to know
+
+| Provider | Job | Default implementation |
+| --- | --- | --- |
+| `AuthnProviderManager` | Routes each credential type to the authn provider that owns it, and merges the results | `internal/authnprovider/manager` |
+| `AuthnProviderInterface` | One credential backend: verify credentials, look up the entity, fetch attributes | `defaultprovider` (catch-all). A REST provider can claim credential types and send them to an external `/authenticate` service. |
+| `EntityProvider` (internal) | Reads and writes entities for the runtime | `internal/entityprovider` |
+| `UserMgtProvider`, `AgentMgtProvider` <V2 /> | Create users and agents and set their credentials from a flow | Thin wrappers over the user and agent services |
+| `ActorProvider` | One view of an app or agent as an OAuth client and actor: client, credentials, groups, roles | `internal/actorprovider` |
+| `IdentityGovernanceProvider` <V2 /> | Lock, suspend and access checks at sign-in | `default` or `disabled` |
+| `DesignProvider` | Resolves the theme and layout for a screen or message | `internal/design/resolve` |
+
+Others cover OUs, flows, resource servers, IdPs, consent, i18n, authorization, attestation, observability and the runtime store.
+
+**The rule for executors:** an executor never calls the user or agent service to write. It goes through `UserMgtProvider` or `AgentMgtProvider`, and the service behind it keeps the rules and runs any system flow. Setting a mgt provider to `disabled` turns off provisioning from flows but leaves the management API working.
+
+**The REST authn provider:** set `authn_provider.rest.*` in the deployment config and list the credential types it owns (even `password`). Those credentials go to your service on every sign-in, and there's no fallback to the default provider for them. Two providers claiming one credential type fail at startup.
+
+🧪 **Lab:** open `servicemanager.go` and follow how the authn provider manager is built and handed to the Direct API, the executors and OAuth. Then read `provisioning_executor.go` and find the `UserMgtProvider` call.

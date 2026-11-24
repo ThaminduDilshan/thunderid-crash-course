@@ -1,0 +1,55 @@
+/* Site-wide styles. Infima variables: https://infima.dev */
+
+:root {
+  --ifm-color-primary: #4338ca;
+  --ifm-color-primary-dark: #3c32b6;
+  --ifm-color-primary-darker: #392fac;
+  --ifm-color-primary-darkest: #2f278e;
+  --ifm-color-primary-light: #5146d4;
+  --ifm-color-primary-lighter: #5a50d6;
+  --ifm-color-primary-lightest: #7068dd;
+  --ifm-code-font-size: 92%;
+  --ifm-card-background-color: #ffffff;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --hero-glow: rgba(67, 56, 202, 0.16);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #a5b4fc;
+  --ifm-color-primary-dark: #8b9dfb;
+  --ifm-color-primary-darker: #7d91fa;
+  --ifm-color-primary-darkest: #536cf8;
+  --ifm-color-primary-light: #bfcbfd;
+  --ifm-color-primary-lighter: #cdd6fd;
+  --ifm-color-primary-lightest: #f2f4ff;
+  --ifm-card-background-color: #1b1b1d;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --hero-glow: rgba(165, 180, 252, 0.14);
+}
+
+/* The 2.0-only marker used in the course pages. */
+.badge-v2 {
+  display: inline-block;
+  padding: 0 0.45em;
+  margin: 0 0.15em;
+  border-radius: 999px;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1.6;
+  vertical-align: 0.1em;
+  color: var(--ifm-color-primary-darkest);
+  background: rgba(67, 56, 202, 0.12);
+  border: 1px solid rgba(67, 56, 202, 0.35);
+}
+
+[data-theme='dark'] .badge-v2 {
+  color: var(--ifm-color-primary-lightest);
+  background: rgba(165, 180, 252, 0.15);
+  border-color: rgba(165, 180, 252, 0.4);
+}
+
+/* Wide tables scroll inside the page instead of stretching it. */
+.markdown table {
+  display: block;
+  overflow-x: auto;
+}

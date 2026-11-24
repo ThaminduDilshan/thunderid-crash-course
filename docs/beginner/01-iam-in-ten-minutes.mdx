@@ -1,0 +1,29 @@
+---
+title: "1. IAM in ten minutes"
+sidebar_label: "1. IAM in ten minutes"
+---
+
+Identity and Access Management (IAM) answers two questions for every request: who is this, and what are they allowed to do.
+
+- **Identity:** a record of a person, a machine or an AI agent, with attributes (email, name) and credentials (password, passkey, client secret).
+- **Authentication (authn):** proving who you are. Ex: password, one-time code (OTP), passkey, signing in with Google.
+- **Authorization (authz):** deciding what an authenticated identity can do. Ex: a role that grants `orders:read`.
+- **Identity provider (IdP):** the system that does authentication and issues proof of it. ThunderID is an IdP. Google or another company's IdP can be an upstream IdP that ThunderID trusts (federation).
+
+## OAuth 2.0 and OpenID Connect
+
+Most of ThunderID's external surface is these two standards.
+
+- **OAuth 2.0** ([RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)) is about delegated access. A **client** (your app) gets an **access token** from an **authorization server** (ThunderID) and presents it to a **resource server** (your API).
+- **OpenID Connect (OIDC)** sits on top of OAuth 2.0 and adds sign-in. The client also gets an **ID token** that says who the user is.
+- A **grant type** is a way to get a token. The common ones: `authorization_code` (a user signs in through a browser redirect), `client_credentials` (a service gets a token for itself), `refresh_token` (get a new access token without signing in again).
+- **PKCE** ([RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636)) protects the authorization code from being stolen and replayed. Browser and mobile apps always use it.
+
+## Tokens
+
+- **Access token:** sent to APIs. Carries `scope` (what it's allowed to do) and `aud` (which API it's for).
+- **ID token:** read by the client. Carries `sub` (the user's identifier) and profile claims.
+- **Refresh token:** used only at the token endpoint to get new tokens.
+- ThunderID issues tokens as signed **JWTs** ([RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)). Anyone can verify the signature with the public keys at the JWKS endpoint. Paste one into a JWT decoder during the labs to see the claims.
+
+Go deeper: [Tokens](https://thunderid.dev/docs/next/key-concepts/tokens), [Authorization](https://thunderid.dev/docs/next/key-concepts/authorization).

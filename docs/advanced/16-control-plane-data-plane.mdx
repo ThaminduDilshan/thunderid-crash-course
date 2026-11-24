@@ -1,0 +1,48 @@
+---
+title: "16. Control plane, data plane and projects"
+sidebar_label: "16. Control plane, data plane and projects"
+---
+
+:::info[2.0 only]
+
+This module covers features that exist only on the 2.0 line (`main`), not in the 1.x releases.
+
+:::
+
+The control plane (CP) is where configuration is authored. The data plane (DP) is where users sign in. They're two builds of one codebase: `backend/cmd/cpserver` and `backend/cmd/server`.
+
+|  | Control plane | Data plane |
+| --- | --- | --- |
+| Serves | Management APIs, the Control Plane Console | OAuth/OIDC, flows, Direct API, Gate, the Admin Console, its own management API |
+| Sign-in traffic | None. The runtime packages aren't even linked in, and a test enforces it. | All of it |
+| Who signs in to its console | Operators, through a trusted issuer (a data plane such as `auth-dp`) | Service desk admins, through the DP's own Gate |
+| Holds | Projects, gateways, configuration versions | The configuration applied to it, plus its users and runtime data |
+
+## How configuration reaches a data plane
+
+1. An operator changes something on the CP.
+2. About 2 seconds after the last change, the CP captures a new **configuration version**: an export of its configuration.
+3. The version is applied to each registered **gateway** (a managed data plane): the CP posts it to the DP's import API with the gateway's API key. Applied resources are read-only on the DP.
+4. Credentials don't travel in the bundle. They're written to the DP's secret store, and the bundle refers to them with `sec:` ([module 15](/docs/advanced/declarative-config)).
+
+Auto-apply is off by default and on in the quickstart pack. Without it, apply a version yourself with `POST /gateways/{id}/apply`. You can also diff and revert a gateway.
+
+## Projects
+
+A project groups configuration on the control plane, Ex: per product or team.
+
+- **Project-level:** applications, agents, flows, notification templates.
+- **Organization-level:** user types, agent types, connections.
+- **Either:** users, groups, roles, resource servers.
+- **Deployment-level:** translations, server config, variables, secrets.
+
+A project isn't an isolation boundary. The data plane stores the `projectId` it receives and only uses it to filter management lists. Sign-in and tokens never look at it. Separate deployments are the isolation boundary.
+
+## 🧪 Lab
+
+1. Create a project in the Control Plane Console and an app inside it.
+2. `curl -sk $CP/configuration-versions -H "Authorization: Bearer $TOKEN" | jq`. Find the version your change produced.
+3. `curl -sk $CP/gateways -H "Authorization: Bearer $TOKEN" | jq`, then `GET $CP/gateways/<id>/applied-version`.
+4. Try to edit the synced app through the DP's management API and see it refused.
+
+Go deeper: [Configuration versions](https://thunderid.dev/docs/next/guides/declarative-configurations/configuration-versions), [Centralized configuration](https://thunderid.dev/docs/next/use-cases/managed-deployments/centralized-configuration), [Trusted issuer](https://thunderid.dev/docs/next/guides/trusted-issuer), [CP/DP design spec](https://github.com/thunder-id/thunderid/tree/main/docs-internals/control-plane-data-plane-separation).

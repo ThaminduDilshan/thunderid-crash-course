@@ -1,0 +1,38 @@
+---
+title: "21. Development setup"
+sidebar_label: "21. Development setup"
+---
+
+**Prerequisites:** Git, Go (version in `backend/go.mod`), Node.js LTS, pnpm, `sqlite3` and `openssl`. On Windows, PowerShell 7 too. For debugging: Delve and the VS Code Go extension.
+
+**Get the code:** fork [thunder-id/thunderid](https://github.com/thunder-id/thunderid), clone your fork, and add the main repo as `upstream`.
+
+**Run it:**
+
+| Goal | Command | What you get |
+| --- | --- | --- |
+| Everything, like the quickstart pack | `make run` | DP on 8090, auth-dp on 8091, CP on 8095, Gate on 5190, Admin Console on 5192, CP Console on 5193 |
+| Only the data plane side | `make run_dp` | DP and its Admin Console |
+| Only the control plane side | `make run_cp` | CP, its console and auth-dp |
+| One backend, frontends separately | `make run_backend` + `make run_frontend` | An all-in-one backend and the full Console on 5191, easier to debug |
+| Backend under Delve | `make debug_backend` | Attach from VS Code |
+
+`make run` keeps databases, keys and secrets in `target/dev-quickstart/`. Delete it to start clean. With `make run_backend`, seed data once with `go run -C backend/cmd/server . bootstrap --admin-password admin` (see the debugging guide for the full command).
+
+**Test it:**
+
+| What | Command |
+| --- | --- |
+| Backend unit tests | `make test_unit` |
+| Backend integration tests | `make test_integration` (needs `make build_backend` first) |
+| One integration test | `make test_integration RUN="TestName"` |
+| Frontend unit tests | `make test_frontend` |
+| Playwright end-to-end | `make test_e2e` |
+| Everything CI runs locally | `make pr_checks` |
+| Regenerate mocks after changing an interface | `make mockery` |
+
+New code needs at least 80% coverage. CI also runs integration tests against SQLite, PostgreSQL and Redis.
+
+**Where the rules live:** `AGENTS.md` at the repo root and in `backend/` and `frontend/`, and the skills under `.agent/skills/`. They're written for humans and AI coding agents alike.
+
+Go deeper: [Prerequisites](https://thunderid.dev/community/contributing/contributing-code/prerequisites), [Configure and run](https://thunderid.dev/community/contributing/contributing-code/configure-and-run), [Debugging](https://thunderid.dev/community/contributing/contributing-code/debugging), [Useful commands](https://thunderid.dev/community/contributing/contributing-code/optional-setup/useful-commands).

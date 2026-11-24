@@ -1,0 +1,23 @@
+---
+title: "22. How work gets done"
+sidebar_label: "22. How work gets done"
+---
+
+A feature goes through four stages, each with its own artifact and review.
+
+1. **Feature issue:** states the problem, who it's for and why now. Not the solution. Maintainers triage, accept and refine its use cases and scope. An idea discussion can come first if the problem isn't clear yet.
+2. **Design discussion:** once the issue is assigned to you, propose the approach in the Design category of GitHub Discussions. The outcome is approved, needs revision or rejected.
+3. **Spec and threat model:** write the agreed design into `docs-internals/<feature>/spec.md` and `threat-model.md` from the templates, and merge them through their own PR before any code.
+4. **Implementation PRs:** small, each one building and passing tests on its own.
+
+Bug fixes and small improvements skip stages 2 and 3, but still need an assigned issue.
+
+**PR checklist:**
+
+- Get the issue assigned first. Comment on it and post it in `#thunderid-dev` on the [LF Decentralized Trust Discord](https://discord.lfdecentralizedtrust.org/).
+- Sign off every commit (`git commit -s`). A DCO check fails without it.
+- Run `make pr_checks` before pushing.
+- Add docs under `docs/content/` for user-visible changes and run Vale (`make lint_docs`). Fill the breaking changes section of the PR template when one applies.
+- In an SDK repo, label the PR `parity/prs-raised` (with links to the ports in the other SDKs) or `parity/prs-not-needed`.
+
+Go deeper: [Propose a feature](https://thunderid.dev/community/contributing/propose-a-feature), [Propose a design](https://thunderid.dev/community/contributing/propose-a-design), [Pull request workflow](https://thunderid.dev/community/contributing/contributing-code/pull-request-workflow), [Cross-SDK feature parity](https://thunderid.dev/community/contributing/contributing-code/sdk-development/feature-parity).

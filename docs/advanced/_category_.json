@@ -1,0 +1,11 @@
+{
+  "label": "🚀 Advanced",
+  "position": 3,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "title": "🚀 Advanced",
+    "description": "Operate and extend: the protocol catalogue, verifiable credentials, GitOps-style configuration and the control plane.",
+    "slug": "/advanced"
+  }
+}

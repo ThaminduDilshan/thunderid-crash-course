@@ -1,0 +1,24 @@
+---
+title: "Glossary"
+sidebar_label: "📖 Glossary"
+sidebar_position: 10
+---
+
+| Term | Meaning |
+| --- | --- |
+| Assertion | A signed JWT from a completed flow or Direct API call, exchanged for OAuth tokens with token exchange |
+| Connection | Configuration for reaching an outside system: an IdP, SMS or email provider, HTTP endpoint or AuthZEN PDP |
+| Configuration version | A captured snapshot of control plane configuration, applied to gateways |
+| Entity | A user, agent or application, all stored in one layer |
+| Entity type | A user type or agent type: the attribute schema for its entities |
+| Executor | One unit of work in a flow, run by a `TASK_EXECUTION` node |
+| Flow | A graph of nodes that runs a user journey: sign-in, sign-up, recovery and more |
+| Flow Secret | A per-app secret that lets a confidential server-side app start a sign-in on the Flow Execution API |
+| Gate | The hosted sign-in UI served by the data plane |
+| Gateway | A data plane registered with a control plane |
+| Handle | A human-readable identifier, unique within its scope (Ex: among sibling OUs) |
+| OU | Organization unit: a node in the tree that owns resources |
+| Project | A configuration-time grouping on the control plane, not an isolation boundary |
+| Provider | An interface the runtime depends on, with swappable implementations |
+| Resource server | An API protected by ThunderID. Its identifier becomes the token's `aud`. |
+| Trusted issuer | Another token issuer whose tokens a deployment accepts, such as `auth-dp` for the control plane |

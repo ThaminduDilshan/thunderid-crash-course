@@ -1,0 +1,40 @@
+---
+title: "11. Agents and MCP"
+sidebar_label: "11. Agents and MCP"
+---
+
+:::tip[🧭 Wayfinder step]
+
+[Set up the agent sample](https://thunderid.dev/docs/next/use-cases/ai-agents/try-it-out/setup), then its three walkthroughs.
+
+:::
+
+An agent is an entity of category `agent` with an agent type, like a user with a user type. It can hold an OAuth client, join groups and hold roles, so its access is managed the same way as a person's.
+
+- **Owner:** an agent can record the user or app that owns it.
+- **Delegated:** a delegated agent can act for users <V2 />. A `personal-assistant` agent is owned by one user and acts only for that user <V2 />.
+- **Lifespan** <V2 />: `validUntil` expires the agent and caps its token lifetimes.
+
+## The four agent authentication patterns
+
+| Pattern | How | What the token says |
+| --- | --- | --- |
+| Own token | `client_credentials` with the agent's client | `sub` is the agent, `sub_type=agent` |
+| Agent sign-in | The agent completes a sign-in flow (password, OTP, magic link, passkey). The app must list its agent type in `allowedAgentTypes`. | `sub` is the agent |
+| On behalf of a user | The user signs in and consents. The agent gets a token through authorization code, CIBA, device code or token exchange. | `sub` is the user, the `act` claim is the agent |
+| Agent to agent | Token exchange with an `actor_token` | Nested `act` claims record the chain |
+
+## MCP
+
+ThunderID is the authorization server for MCP servers you build and MCP clients that call them.
+
+- **Protect an MCP server:** register it as a resource server whose identifier is its URL, add a permission per tool, and grant them through roles. The server validates tokens offline against `/oauth2/jwks`.
+- **Register MCP clients:** manually (app type `mcp`), through Dynamic Client Registration (RFC 7591, enabled with `oauth.dcr.enabled`), or from a Client ID Metadata Document <V2 />.
+
+## 🧪 Lab
+
+1. Create an agent with an OAuth client: `POST $CP/agents` with `{"type":"default","attributes":{"name":"Sync Bot"},"inboundAuthConfig":[{"type":"oauth2","config":{"tokenEndpointAuthMethod":"client_secret_basic"}}]}`.
+2. Get its own token with `client_credentials` and decode it. Find `sub_type`.
+3. Run the [AI agents try-it-out](https://thunderid.dev/docs/next/use-cases/ai-agents/try-it-out), which covers all four patterns with the Wayfinder sample.
+
+Go deeper: [Agents](https://thunderid.dev/docs/next/guides/agents), [Agent authentication](https://thunderid.dev/docs/next/guides/agents/authentication), [MCP](https://thunderid.dev/docs/next/guides/mcp/overview), [AI agents use case](https://thunderid.dev/docs/next/use-cases/ai-agents/overview).

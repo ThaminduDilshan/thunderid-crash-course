@@ -1,0 +1,55 @@
+---
+title: "9. Three ways to sign in"
+sidebar_label: "9. Three ways to sign in"
+---
+
+:::tip[🧭 Wayfinder step]
+
+[How it all runs](https://thunderid.dev/docs/next/use-cases/b2c/build-run) traces one sign-in end to end.
+
+:::
+
+ThunderID offers three integration models. They differ in who owns the UI and who decides the order of steps.
+
+|  | Redirect-based | App-native | Direct API |
+| --- | --- | --- | --- |
+| Standard | OAuth 2.0 + OIDC | Flow Execution API | Single-purpose `/auth/**` endpoints |
+| Who renders the screens | ThunderID (Gate) | Your app | Your app |
+| Who decides the steps | The flow, server-side | The flow, server-side | Your app |
+| Do credentials pass through your app | No | Yes | Yes |
+| What you get at the end | Authorization code, then tokens | An assertion JWT, exchanged for tokens with token exchange ([RFC 8693](https://datatracker.ietf.org/doc/html/rfc8693)) | An assertion JWT, same exchange |
+| Fits | Any app that can redirect, including SPAs | Native mobile and confidential server-side apps | CLIs, scripts, server-to-server |
+
+Redirect-based and app-native run the same flows ([module 7](/docs/beginner/flows)), so changing a flow changes both without touching the app. Gate itself is a client of the Flow Execution API.
+
+## Rules that trip people up
+
+- **Who may start a sign-in directly.** Browser and backend service (M2M) apps can't start an `AUTHENTICATION` or `SIGNOUT` flow on `/flow/execute`. Mobile apps need platform attestation (Play Integrity or App Attest), or Dev mode. Full-stack, custom and MCP client apps need a `Flow-Secret` header when they qualify for one. Continuing a flow with an `executionId` is always allowed, and registration and recovery are never restricted.
+- **Every step carries a `challengeToken`.** The server rotates it on every response. Send back the latest one or the step fails.
+- **No back button.** A flow only moves forward.
+- **Direct API is off until you set a secret.** Calls to `/auth/**` need the `Direct-Auth-Secret` header matching `server.security.direct_auth_secret`. `setup.sh` generates one and prints it once. There is no rate limiting on these endpoints, so put a gateway in front of them.
+
+## 🧪 Lab
+
+1. **Redirect:** done in [module 12](/docs/intermediate/sdks)'s React quickstart. Or open `https://localhost:8090/oauth2/authorize?response_type=code&client_id=<id>&redirect_uri=<uri>&scope=openid&code_challenge=<c>&code_challenge_method=S256` in a browser and follow the redirects to Gate.
+2. **App-native:** create a full-stack app with no OAuth configuration and keep its Flow Secret. Then:
+
+```bash
+curl -sk -X POST https://localhost:8090/flow/execute \
+  -H 'Content-Type: application/json' -H 'Flow-Secret: <flow-secret>' \
+  -d '{"applicationId":"<app-id>","flowType":"AUTHENTICATION"}'
+```
+
+The response lists the `inputs` to collect and the `actions` to choose from. Post them back with the `executionId` and the latest `challengeToken`, keying each input by its `identifier`. With the default flow that's `{"executionId":"<id>","challengeToken":"<token>","action":"action_001","inputs":{"username":"<user>","password":"<password>"}}`. On `COMPLETE` the response carries an `assertion`. Rerun with `"verbose": true` and compare: `meta` is the component tree Gate renders.
+
+3. **Direct API:**
+
+```bash
+curl -sk -X POST https://localhost:8090/auth/credentials/authenticate \
+  -H 'Content-Type: application/json' -H 'Direct-Auth-Secret: <secret>' \
+  -d '{"identifiers":{"username":"<user>"},"credentials":{"password":"<password>"}}'
+```
+
+Decode the ID token from step 1 and the assertions from steps 2 and 3, and compare the claims.
+
+Go deeper: [Integration models](https://thunderid.dev/docs/next/key-concepts/authentication/integration-models), [Flow Execution API](https://thunderid.dev/docs/next/apis#tag/flow-execution).
