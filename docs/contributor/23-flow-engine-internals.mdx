@@ -20,13 +20,13 @@ The flow engine lives in `backend/internal/flow/`: `mgt` (flow CRUD, validation,
 
 ## One request through the engine
 
-1. `PRE_REQUEST` interceptors run. The challenge token interceptor checks the incoming `challengeToken` against a stored hash.
-2. The engine resolves the flow graph. On the first request it picks the app's flow for the flow type, falling back to the server default when the configured flow is gone.
+1. The service resolves the flow graph, or loads the stored context for a running flow. On the first request it picks the app's flow for the flow type. For sign-in only, it falls back to the server default when the configured flow can't be found. Other flow types return a server error.
+2. The engine runs the `PRE_REQUEST` interceptors. The challenge token interceptor checks the incoming `challengeToken` against a stored hash.
 3. For each node: `PRE_NODE` interceptors, `Execute`, `POST_NODE` interceptors. It follows `nextNode` until a node pauses (a `PROMPT` waiting for input, or an executor returning incomplete) or the graph ends. A node that runs more than 10 times in one request is an error.
 4. `POST_REQUEST` interceptors run, and the challenge token is rotated.
-5. The execution context is AES-GCM encrypted and written to the runtime store with a TTL, then deleted when the flow completes or fails.
+5. The execution context is AES-GCM encrypted and written to the runtime store with a TTL. It's deleted when the flow completes. A flow that ends on an `ERROR` step keeps its context until the TTL runs out.
 
-The TTL is fixed when the flow starts: 3600 s for sign-in and registration, 1800 s for recovery and sign-out, 86400 s for onboarding and invitation, overridable per type with `flow.<type>.expirySeconds`. A late `executionId` gets `FES-1004`. This execution context isn't the SSO session, which is separate and per flow.
+The TTL is fixed when the flow starts: 3600 s for sign-in and registration, 1800 s for recovery and sign-out, 86400 s for onboarding and invitation, overridable per type in the `flow` server configuration (Ex: `authFlow.expirySeconds`, `registrationFlow.expirySeconds`). A late `executionId` gets `FES-1004`. This execution context isn't the SSO session, which is separate and per flow.
 
 **System flows:** services run `SYSTEM` flows in process through `ExecuteSystemFlow`. Their definitions are JSON under `flow/mgt/system/` (Ex: `entity_delete_pre.json`, `revocation_post.json`).
 
@@ -34,16 +34,18 @@ The TTL is fixed when the flow starts: 3600 s for sign-in and registration, 1800
 
 An executor implements `providers.Executor` (`backend/pkg/thunderidengine/providers/interface.go`).
 
-1. Build its base with `flowFactory.CreateExecutor(name, type, defaultInputs, prereqs, &ExecutorMeta{})`. `credentials_auth_executor.go` is a good model.
+1. Build its base with `flowFactory.CreateExecutor(name, type, defaultInputs, prereqs, &ExecutorMeta{})`. The `ExecutorMeta` holds its modes, the flow types it's allowed in and its properties. `credentials_auth_executor.go` is a good model.
 2. Add the name to `executormeta/constants.go`.
-3. Add its metadata, including the flow types it's allowed in, to `executormeta/catalog.go`. `catalog_parity_test.go` fails if the catalogue and the executor disagree.
+3. Mirror the same metadata in `executormeta/catalog.go`. `executor/catalog_parity_test.go` fails if the catalogue and the executor disagree.
 4. Register it in `newBuiltInExecutorRegistrars` in `executor/register.go`.
 
 A deployment can enable a subset of executors with the `flow.executors` config. Executors never call user or agent services directly to write. They go through the user and agent management providers ([module 22](/docs/next/contributor/providers)).
 
 ## 🧪 Lab
 
-set a breakpoint in `flowexec/engine.go` with `make debug_backend`, then run the [module 11](/docs/next/intermediate/three-ways-to-sign-in) `curl` loop and step through one request.
+1. Start the backend under Delve and attach your editor, as in [module 24](/docs/next/contributor/development-setup#debug-it).
+2. The source tree's backend has its own databases, so the app and user from the quickstart pack don't exist there. Create a `fullstack` app with no OAuth configuration and a test user on `https://localhost:8090`, as in [module 11](/docs/next/intermediate/three-ways-to-sign-in).
+3. Set a breakpoint in `flowexec/engine.go`, run the module 11 app-native `curl` loop, and step through one request.
 
 ## Recap
 
