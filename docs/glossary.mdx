@@ -6,6 +6,7 @@ sidebar_position: 10
 
 | Term | Meaning |
 | --- | --- |
+| `auth-dp` | In the local quickstart, the deployment that signs operators in to the control plane |
 | Assertion | A signed JWT from a completed flow or Direct API call, exchanged for OAuth tokens with token exchange |
 | Connection | Configuration for reaching an outside system: an IdP, SMS or email provider, HTTP endpoint or AuthZEN PDP |
 | Configuration version | A captured snapshot of control plane configuration, applied to gateways |
@@ -22,4 +23,4 @@ sidebar_position: 10
 | Project | A configuration-time grouping on the control plane, not an isolation boundary |
 | Provider | An interface the runtime depends on, with swappable implementations |
 | Resource server | An API protected by ThunderID. Its identifier becomes the token's `aud`. |
-| Trusted issuer | Another token issuer whose tokens a deployment accepts, such as `auth-dp` for the control plane |
+| Trusted issuer | Another token issuer whose tokens a deployment accepts |

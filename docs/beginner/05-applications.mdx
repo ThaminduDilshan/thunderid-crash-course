@@ -30,18 +30,18 @@ Wayfinder's web frontend runs in the browser, so it's registered as a **browser 
 
 ## Application types
 
-The `type` is required and can't change after the app is created. It decides how the app is allowed to sign people in.
+The `type` is required and can't change after the app is created. It says what kind of app this is. The OAuth settings decide how it gets tokens, and the console's **templates** (React, Next.js, Android, Wallet and so on) fill those settings in for you. Pick the template closest to your stack.
 
-| Type | For | Signs in through |
+| Type | For | What the template sets up |
 | --- | --- | --- |
-| `browser` | Single-page apps: React, Vue, plain JavaScript | Redirect only: authorization code + PKCE, as a public client |
-| `fullstack` | Server-rendered apps: Next.js, Express | Redirect, or its own screens with a Flow Secret ([module 11](/docs/next/intermediate/three-ways-to-sign-in)) |
-| `mobile` | iOS, Android, Flutter | Redirect, or its own screens with platform attestation |
-| `m2m` | Backend services with no user | `client_credentials` only |
-| `mcp` | MCP clients ([module 14](/docs/next/intermediate/mcp-and-delegation)) | Redirect: authorization code + refresh |
-| `custom` | Anything else, including apps registered through dynamic client registration | Depends on its OAuth settings |
+| `browser` | Single-page apps: React, Vue, plain JavaScript | Authorization code + PKCE, as a public client |
+| `fullstack` | Server-rendered apps: Next.js, Express | Authorization code with a client secret |
+| `mobile` | iOS, Android, Flutter | Authorization code + PKCE |
+| `m2m` | Backend services with no user | `client_credentials` |
+| `mcp` | MCP clients ([module 14](/docs/next/intermediate/mcp-and-delegation)) | Authorization code + refresh |
+| `custom` | Anything else, including apps registered through dynamic client registration | Whatever you configure |
 
-The console's **templates** (React, Next.js, Android, Wallet and so on) only prefill these settings. Pick the one closest to your stack.
+The type itself gates one thing: whether the app may run sign-in on its own screens instead of redirecting ([module 11](/docs/next/intermediate/three-ways-to-sign-in)). `browser` and `m2m` apps never can. A `mobile` app needs platform attestation. The other types need the right grants and a Flow Secret.
 
 ## What's inside an application
 
@@ -67,9 +67,10 @@ Two notes while you follow it:
 
 Then:
 
-1. Sign in. Notice the address bar: you leave your app, sign in on Gate, and come back.
-2. Open the browser's Network tab and find the `/oauth2/authorize` request, the `/flow/execute` calls Gate makes, and the final `/oauth2/token` call.
-3. Copy the ID token from the token response and decode it. Find `sub`, `iss` and `aud`.
+1. Open the browser's DevTools, go to the **Network** tab and turn on **Preserve log**. Sign-in is a full-page redirect, so without it the log is cleared when you leave the app.
+2. Sign in. Notice the address bar: you leave your app, sign in on Gate, and come back.
+3. In the Network tab, find the `/oauth2/authorize` request, the `/flow/execute` calls Gate makes, and the final `/oauth2/token` call.
+4. Copy the ID token from the token response and decode it. Find `sub`, `iss` and `aud`.
 
 :::tip[Also try]
 
@@ -84,7 +85,7 @@ curl -sk -u '<client-id>:<client-secret>' -d grant_type=client_credentials $DP/o
 ## Recap
 
 - An **application** is a registered client with its own rules.
-- The **type** decides how it may sign people in. Browser apps always use redirect + PKCE.
+- The **type** says what kind of app it is. The OAuth settings, prefilled by a template, decide how it gets tokens.
 - You've signed a real user in. The rest of the course explains everything that happened in between.
 
 Go deeper: [Manage applications](https://thunderid.dev/docs/next/guides/applications/manage-applications), [Application settings](https://thunderid.dev/docs/next/guides/applications/application-settings), [Token attributes](https://thunderid.dev/docs/next/guides/applications/configure-token-attributes).

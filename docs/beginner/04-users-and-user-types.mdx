@@ -1,12 +1,11 @@
 ---
 title: "4. Users and user types"
 sidebar_label: "4. Users and user types"
-description: "Entities, user types and their schemas, credentials, and groups."
+description: "User types and their schemas, credentials, and groups."
 ---
 
 :::note[🎯 What you'll learn]
 
-- What an **entity** is, and why users, agents and apps share one model
 - How a **user type** defines what a user record looks like
 - How passwords and other credentials are stored
 - What groups are for
@@ -32,18 +31,6 @@ Keeping them separate means customer access and staff access can never get mixed
 
 :::
 
-## Entities: one model for everyone
-
-ThunderID stores every principal as an **entity**, with a category:
-
-| Category | What it is | Its type |
-| --- | --- | --- |
-| `user` | A person | A user type (Ex: the bootstrap `person`) |
-| `agent` | An AI agent or other autonomous software ([module 7](/docs/next/beginner/agents)) | An agent type (Ex: the bootstrap `default`) |
-| `app` | An application ([module 5](/docs/next/beginner/applications)) | None. Apps have no schema. |
-
-Because they share one model, users, agents and apps can all join groups, hold roles and authenticate in similar ways.
-
 ## What a user type defines
 
 A user type (or agent type) is a list of attributes, each with a type and some rules.
@@ -56,7 +43,8 @@ A user type (or agent type) is a list of attributes, each with a type and some r
   - `regex`: the value must match a pattern. This is also how you set password rules.
   - `credential`: the value is a secret, such as a password. It's hashed, stored apart from the profile, and never returned by the API.
 - **Display and contact:** a type can name the attribute used as the display name, and the primary email and mobile used for notifications.
-- **Ownership:** each type belongs to an organization unit ([module 12](/docs/next/intermediate/organization-units)).
+- **Ownership:** each type belongs to an organization unit ([module 12](/docs/next/intermediate/organization-units)), and only users in that unit or a unit below it can use it.
+- **Where it lives:** user types are shared by all projects, so the console lists them in the organization-wide view, not inside a project.
 
 The bootstrap `person` type has `username` and `email` (both required and unique) and a `password` marked as a credential.
 
@@ -66,14 +54,20 @@ The bootstrap `person` type has `username` and `email` (both required and unique
 
 :::
 
+:::tip[Under the hood]
+
+Users, agents ([module 7](/docs/next/beginner/agents)) and applications ([module 5](/docs/next/beginner/applications)) are all stored the same way, which is why all three can join groups and hold roles. You'll see this in the code as **entities** in the Contributor track.
+
+:::
+
 ## Groups
 
 A **group** collects members so you can manage them together, such as giving a whole team a role at once. Members can be users, agents, apps or other groups. Members must belong to the group's organization unit or be shared into it ([module 12](/docs/next/intermediate/organization-units)).
 
 ## 🧪 Lab
 
-1. In the Control Plane Console, open **User types** and create a `partner` type with `username`, `email` and a `password` marked as a credential.
-2. Create a user of that type.
+1. In the Control Plane Console, clear the project selection to reach the organization-wide view ([Lab 0](/docs/next/beginner/lab-0#step-2-tour-the-consoles)). Open **User types** and create a `partner` type in the `Default` organization unit, with `username`, `email` and a `password` marked as a credential.
+2. Go back to the `Default` project, open **Users**, and add a user of the `partner` type.
 3. Read it back through the API. The password isn't in the response:
 
 ```bash
@@ -90,8 +84,7 @@ Do [Model your users](https://thunderid.dev/docs/next/use-cases/b2c/build-users)
 
 ## Recap
 
-- Users, agents and apps are all **entities**.
-- A **user type** is the schema for one kind of person. A `credential` attribute is hashed and never returned.
+- A **user type** is the schema for one kind of person, shared by all projects. A `credential` attribute is hashed and never returned.
 - **Groups** collect members so you can manage them together.
 
 Go deeper: [User types](https://thunderid.dev/docs/next/guides/users/user-types), [Manage users](https://thunderid.dev/docs/next/guides/users/manage-users), [Manage groups](https://thunderid.dev/docs/next/guides/users/manage-groups).

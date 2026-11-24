@@ -8,6 +8,7 @@ description: "ThunderID's goals and its moving parts: the data plane, the contro
 
 - What ThunderID is built for
 - The parts you'll meet in the labs, and what each one does
+- How configuration is organized: projects, organization units and shared settings
 
 :::
 
@@ -20,7 +21,7 @@ Its design goals, from the [README](https://github.com/thunder-id/thunderid#read
 - **Agent-native identity.** AI agents are first-class identities, not service accounts in disguise.
 - **Decentralized identity.** Issue and verify verifiable credentials held in digital wallets.
 - **Post-quantum ready.** Crypto-agile signing, including ML-DSA keys.
-- **Lightweight and GitOps friendly.** A single binary, with every resource definable in YAML.
+- **Lightweight and GitOps friendly.** A lightweight, containerized runtime, with flows, policies and configuration you can keep in version control.
 
 ## The moving parts
 
@@ -29,7 +30,7 @@ Think of ThunderID as two kinds of server. One is where you **configure** things
 ```mermaid
 flowchart LR
   op([Operator]) -->|authors| cp[Control plane]
-  auth["auth-dp<br/>(trusted issuer)"] -.->|signs operators in| cp
+  auth["auth-dp<br/>(issues operator tokens)"] -.->|signs operators in| cp
   cp -->|applies configuration versions| dp[Data plane]
   users([Users, apps, agents]) -->|sign in| dp
 ```
@@ -39,11 +40,13 @@ flowchart LR
 | **Data plane** (DP) | The server that runs sign-in: the OAuth 2.0 and OIDC endpoints, the flow engine and the Direct API. It also has a management API that receives configuration. | End users, apps, agents |
 | **Control plane** (CP) | The server where configuration is authored. It serves management APIs only and never handles a sign-in. It captures configuration versions and applies them to the data planes it manages. | Operators, CI pipelines |
 | **Gate** | The hosted sign-in, sign-up and recovery screens, served by the data plane at `/gate`. | End users |
-| **Admin Console** | The data plane's console at `/console`, for users, agents, groups, roles and organization units. | Support and admin staff |
+| **Admin Console** | The data plane's console at `/console`, for users, agents, groups and roles. | Support and admin staff |
 | **Control Plane Console** | The control plane's console, for applications, flows, connections, roles, users and projects. | Operators |
 | **SDKs** | Client libraries for JavaScript, iOS, Android and Flutter. | App developers |
 
-The split exists so configuration is written once, versioned, and rolled out to many data planes. A data plane can still run on its own: everything is reachable through its REST API and YAML. [Module 19](/docs/next/advanced/control-plane-data-plane) goes deeper.
+The control plane and the data plane are two server builds from one codebase: `backend/cmd/cpserver` and `backend/cmd/server`. The split exists so configuration is written once, versioned, and rolled out to many data planes. A data plane can still run on its own: everything is reachable through its REST API and YAML. [Module 19](/docs/next/advanced/control-plane-data-plane) goes deeper.
+
+In the local quickstart, a third deployment called `auth-dp` signs operators in to the control plane. The control plane doesn't issue tokens itself. It accepts `auth-dp`'s tokens because the two share an issuer name and signing keys.
 
 :::info[🧳 In Wayfinder]
 
@@ -51,10 +54,21 @@ Wayfinder's operators configure it on the control plane: its users' schema, its 
 
 :::
 
+## How configuration is organized
+
+You'll meet three places where things live. The labs ask you to pick them, so here's what they are:
+
+- **Project:** a folder for configuration on the control plane, Ex: one per product or team. In the console, applications, agents, flows, roles, users, groups and organization units are created inside a project. The bootstrap project is `Default`, and the Control Plane Console opens in it.
+- **Organization unit (OU):** a node in a tree that owns users, apps and roles. Every user belongs to exactly one OU. The bootstrap OU is `Default`. [Module 12](/docs/next/intermediate/organization-units) covers OUs.
+- **Shared by all projects:** user types, agent types, connections and translations are organization-wide. In the console they sit outside any project, in the organization-wide view.
+
+A project only organizes configuration. It doesn't isolate sign-in or tokens. [Module 19](/docs/next/advanced/control-plane-data-plane) explains how projects are deployed.
+
 ## Recap
 
 - ThunderID is IAM for humans, AI agents and machines.
 - The **data plane** runs sign-in. The **control plane** is where you author configuration.
 - **Gate** is the sign-in UI. Each plane has its own console.
+- Configuration lives in a **project**, owned by an **organization unit**, or shared by all projects.
 
 Go deeper: [ARCHITECTURE.md](https://github.com/thunder-id/thunderid/blob/main/ARCHITECTURE.md), [Use cases](https://thunderid.dev/docs/next/use-cases/overview).

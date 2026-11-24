@@ -37,9 +37,9 @@ Wayfinder starts with ThunderID's bundled sign-in flow, `default-flow`: ask for 
 A flow is made of **nodes**. You'll meet two kinds first:
 
 - A **prompt** node shows a screen: the inputs to collect (Ex: username, password) and the actions the user can take (Ex: Continue, Forgot password).
-- A **task** node does work by running an **executor**. `CredentialsAuthExecutor` checks a password. `ProvisioningExecutor` creates a user. `OTPExecutor` sends and checks a one-time code.
+- A **task** node does work by running an **executor**. `CredentialsAuthExecutor` checks a password. `ProvisioningExecutor` creates a user. `OTPExecutor` generates and checks a one-time code, and `SMSExecutor` or `EmailExecutor` sends it.
 
-A task's outcome decides where the flow goes next: `onSuccess`, `onFailure`, or `onIncomplete` when it needs more input. A flow also has a start and an end. There's no separate "decision" node: branching comes from these outcomes and from the actions on a prompt.
+A task's outcome decides where the flow goes next: `onSuccess`, `onFailure`, or `onIncomplete` when it needs more input. A flow also has a start and an end. Most branching comes from these outcomes and from the actions on a prompt.
 
 ## Where you edit flows
 
@@ -47,18 +47,24 @@ The **Flow Builder** in the console is a drag-and-drop editor over the same JSON
 
 ## 🧪 Lab
 
-1. List the sign-in flows and open the default one:
+1. List the sign-in flows. The list gives each flow's `id`, `handle` and `name`, but not its nodes:
 
 ```bash
 curl -sk "$CP/flows?flowType=AUTHENTICATION" -H "Authorization: Bearer $TOKEN" | jq
 ```
 
-2. In the JSON of `default-flow`, find:
-   - the `PROMPT` node that asks for `username` and `password`, and its action `action_001`
+2. Find your React app's flow from [module 5](/docs/next/beginner/applications). The console wizard gave the app a sign-in flow of its own, named after the app (Ex: `My React App Sign-in Flow`). Fetch it by ID to see the whole graph:
+
+```bash
+curl -sk "$CP/flows/<flow-id>" -H "Authorization: Bearer $TOKEN" | jq
+```
+
+3. In the JSON, find:
+   - the `PROMPT` node that asks for `username` and `password`, and its action
    - the `TASK_EXECUTION` node that action leads to, and the executor it runs
    - that node's `onSuccess`
-3. Open the same flow in the Control Plane Console's Flow Builder and find the same nodes on the canvas.
-4. Change the sign-in screen's title text and save. Sign in to your React app from [module 5](/docs/next/beginner/applications) again and see the new title, with no change to the app.
+4. Open the same flow in the Control Plane Console's Flow Builder and find the same nodes on the canvas.
+5. Change the sign-in screen's title text and save. Sign in to your React app again and see the new title, with no change to the app.
 
 ## Recap
 
