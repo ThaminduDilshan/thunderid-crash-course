@@ -45,7 +45,7 @@ The type itself gates one thing: whether the app may run sign-in on its own scre
 
 ## What's inside an application
 
-Under the hood an application is an entity of category `app` ([module 4](/docs/next/beginner/users-and-user-types)) with two sets of settings:
+An application has two sets of settings:
 
 - **Sign-in settings:** which flows it runs ([module 6](/docs/next/beginner/flows)), its theme and layout, which user types and agent types may sign in, and which attribute becomes the token's `sub`.
 - **OAuth settings:** grant types, redirect URIs, how the client authenticates, PKCE, whether it's public or confidential, token lifetimes and the claims each token carries.

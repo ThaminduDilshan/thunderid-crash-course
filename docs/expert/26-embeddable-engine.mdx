@@ -1,0 +1,69 @@
+---
+title: "26. The embeddable engine"
+sidebar_label: "26. The embeddable engine"
+description: "Running ThunderID's flow engine and OAuth server inside another Go program: what the engine wires, what the host supplies, and what it leaves out."
+---
+
+:::note[🎯 What you'll learn]
+
+- What the embeddable engine is for, and what it runs
+- Which providers a host must supply, and what happens to the optional ones
+- What the engine leaves out compared to the data plane
+
+:::
+
+## The idea
+
+The data plane is a whole server: management APIs, Gate, consoles, sessions and its own databases. Some products only want the sign-in runtime, with users and configuration kept in their own systems. `backend/pkg/thunderidengine` is for them. Another Go program embeds the flow engine and the OAuth 2.0 and OIDC endpoints on its own HTTP mux, and answers the engine's questions through providers ([module 24](/docs/next/expert/providers)).
+
+## What `New` wires
+
+`thunderidengine.New(mux, opts...)` builds everything the runtime needs and registers its routes on `mux`:
+
+- **Flows:** `POST /flow/execute` and `GET /flow/meta` ([module 25](/docs/next/expert/flow-engine-internals)).
+- **OAuth 2.0 and OIDC:** authorize, token, PAR, introspection, userinfo, JWKS and discovery. CIBA, device authorization, revocation and logout are added when the OAuth config enables them.
+
+Inside, it creates the cache manager ([module 23](/docs/next/expert/caching)), the key manager, JOSE, the runtime store, the attribute cache, the authn provider manager, the executor registry and the flow execution service. A host can bring its own key manager or runtime store with `WithRuntimeCryptoProvider` and `WithRuntimeStoreProvider`.
+
+`New` returns an `*Engine` with no methods: what it gives the host is the routes. Any wiring error ends the process.
+
+## What the host supplies
+
+Options are `With...` functions. These are required, and `New` exits without them:
+
+- `WithServerHome` and a server identifier in `WithServerConfig`.
+- The providers for actors, authorization, consent, design, flows, i18n, IdPs, observability, OUs, resource servers and the default authn provider.
+
+These are optional, and each has a fallback:
+
+| Option | Without it |
+| --- | --- |
+| `WithUserMgtProvider`, `WithAgentMgtProvider` | A disabled provider: flows can't create users or agents, or change a user's credentials |
+| `WithIdentityGovernanceProvider` | Suspensions and locks aren't enforced |
+| `WithAuthorizationDetailTypeProvider` | Every requested authorization detail is refused |
+| `WithCustomExecutors`, `WithCustomAuthnProvider` | Only the built-in executors and authn providers |
+
+## What it leaves out
+
+- No management APIs, Gate or consoles. The host owns configuration and UI.
+- No SSO sessions, and back-channel logout is always off.
+- No MCP server, flow variables or server config reader.
+- Extension executors fail, since there's no connection resolver.
+
+The data plane binary doesn't use the engine. `servicemanager.go` calls the same internal `Initialize` functions directly, with every dependency filled in. The engine is the public surface for embedders, so anything in `pkg/` is public API and changing it needs care.
+
+## 🧪 Lab
+
+Read the code with the [repository](https://github.com/thunder-id/thunderid) open:
+
+1. In `backend/pkg/thunderidengine/engine.go`, find `validateEngineContext`. Count the providers a host must supply.
+2. Find the `UserMgtProvider` fallback in `New`, then open `internal/usermgtprovider/disabled_user_mgt_provider.go`. What does a sign-up flow get when it tries to create a user?
+3. Compare the `flowexec.Initialize` call in `engine.go` with the one in `backend/cmd/server/servicemanager.go`. Which arguments does the engine pass as `nil`, and which features does that remove?
+
+## Recap
+
+- The engine runs flows and the OAuth server inside a host's own HTTP server.
+- The host answers the engine's questions through providers. A few are optional and fall back to a safe default.
+- It has no management APIs, UI or SSO sessions. The data plane doesn't use it.
+
+Go deeper: [`backend/pkg/thunderidengine`](https://github.com/thunder-id/thunderid/tree/main/backend/pkg/thunderidengine), [ARCHITECTURE.md](https://github.com/thunder-id/thunderid/blob/main/ARCHITECTURE.md).

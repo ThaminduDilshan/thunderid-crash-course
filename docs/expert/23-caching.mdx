@@ -1,0 +1,105 @@
+---
+title: "23. Caching"
+sidebar_label: "23. Caching"
+description: "What ThunderID caches, how cache-backed stores keep it fresh, the in-memory and Redis backends, and why in-memory caching is per node."
+---
+
+:::note[🎯 What you'll learn]
+
+- What ThunderID caches, and what it never does
+- How a cache-backed store reads and invalidates
+- The in-memory and Redis backends, and how to configure them
+- Why in-memory caching only works on a single node
+
+:::
+
+## The idea
+
+Every sign-in reads the same things again and again: the app, its flow, the user, the user's type and OU. Reading them from the database each time would make the database the bottleneck. So ThunderID keeps a copy of what's read most in a cache, and drops the copy whenever it writes.
+
+## The cache layer
+
+The cache lives in `backend/internal/system/cache`:
+
+- `cache.Initialize` builds one cache manager at startup from the `cache` config.
+- `cache.GetCache[T](manager, name)` returns a typed, named cache. Each name and type pair gets one instance.
+- Every key is prefixed with the deployment it belongs to, since one server can act for more than one deployment.
+- A cache never fails a request. A failed set or delete is logged as a warning, and a failed get is a miss.
+
+## Cache-backed stores
+
+A domain package that caches wraps its store in a `cache_backed_store.go` with the same interface ([module 21](/docs/next/expert/architecture-tour#inside-a-domain-package)):
+
+- **Read:** look in the cache. On a miss, read the store and put the result in the cache.
+- **Write:** delete the cached entry, write to the store, then cache the new value where the store returns it.
+- **Lists and searches** pass straight through to the store. Only lookups by ID or a key are cached.
+
+What's cached on `main`:
+
+| Area | Cached lookups |
+| --- | --- |
+| Entities ([module 22](/docs/next/expert/entities)) | By ID, with and without credentials, and client ID to entity ID |
+| Entity types and OUs | By ID and by handle |
+| Flows | Definitions by ID and by handle |
+| Applications and agents | Inbound clients and OAuth profiles |
+| IdPs | By ID and by property |
+| Everything else | Certificates, notification templates, server config, secrets, variables and sharing |
+
+An entity's state (`ACTIVE` or `SUSPENDED`) is never cached. It's read fresh, so a suspension takes effect at once.
+
+## Configuration
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `cache.disabled` | `false` | Turns all caching off |
+| `cache.type` | `inmemory` | `inmemory` or `redis` |
+| `cache.size` | `1000` | Entries per cache (in-memory only) |
+| `cache.ttl` | `3600` | Seconds an entry lives |
+| `cache.eviction_policy` | `LRU` | `LRU` or `LFU` (in-memory only) |
+| `cache.cleanup_interval` | `300` | Seconds between sweeps of expired entries (in-memory only) |
+| `cache.properties` | `[]` | Per-cache overrides by name (Ex: `EntityByIDCache`): `disabled`, `size`, `ttl`, `eviction_policy` |
+
+With `redis`, entries are JSON under keys prefixed with `cache.redis.key_prefix` and the deployment ID, and Redis expires them by TTL. If Redis can't be reached at startup, caching is turned off rather than failing the server.
+
+:::note
+
+Redis as the cache and Redis as the `runtime_transient` database ([module 21](/docs/next/expert/architecture-tour#four-databases)) are separate settings. You can use either without the other.
+
+:::
+
+## In memory means per node
+
+There's no cross-node invalidation. A write on one node drops that node's cached copy only. Every other node keeps serving its old copy until the TTL runs out, up to an hour by default.
+
+So the rule is simple:
+
+- **One node:** in-memory is fine.
+- **More than one node:** use Redis, so every node shares one cache. See [Configure caching](https://thunderid.dev/docs/next/deployment/production-guidelines#configure-caching).
+
+The same thing happens to anything that writes to the database without going through the server. The lab shows it.
+
+## 🧪 Lab
+
+With the quickstart pack from Lab 0 running:
+
+1. Sign in to the Admin Console (`https://localhost:8090/console`) as `servicedeskadmin`, open **Users**, then the user you created in Lab 0. Note the email.
+2. From the pack folder, change that email straight in the data plane's database. Use your user's username:
+
+   ```bash
+   sqlite3 dp/database/entitydb.db \
+     "UPDATE ENTITY SET ATTRIBUTES = json_set(ATTRIBUTES, '$.email', 'changed@example.com')
+      WHERE json_extract(ATTRIBUTES, '$.username') = '<username>';"
+   ```
+
+3. Reload the user in the Admin Console. It still shows the old email: the server read it from its cache, not the database. This is what a second node sees after a write on the first.
+4. Stop the pack (`Ctrl+C`), run `./start.sh` again, and reload. The cache started empty, so you see `changed@example.com`.
+5. Put the email back with the same `UPDATE`, and restart once more.
+
+## Recap
+
+- ThunderID caches lookups by ID or key, through cache-backed stores that drop an entry on every write.
+- Lists, searches and entity state are never cached.
+- `inmemory` is the default and is per node. Use `redis` for more than one node.
+- A write that bypasses the server isn't seen until the entry expires or the server restarts.
+
+Go deeper: [Cache configuration](https://thunderid.dev/docs/next/deployment/configuration#cache-configuration), [Configure caching](https://thunderid.dev/docs/next/deployment/production-guidelines#configure-caching), `backend/internal/system/cache`.

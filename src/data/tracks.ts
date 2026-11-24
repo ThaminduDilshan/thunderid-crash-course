@@ -1,7 +1,7 @@
 // The course tracks, in order. Shared by the sidebars (Node) and the progress UI (browser), so it
 // holds plain data only.
 
-export type TrackId = 'beginner' | 'intermediate' | 'advanced' | 'contributor';
+export type TrackId = 'beginner' | 'intermediate' | 'advanced' | 'expert';
 
 export type Track = {
   id: TrackId;
@@ -31,9 +31,9 @@ export const TRACKS: Track[] = [
       'Operate and extend: B2B organizations, the protocol catalogue, verifiable credentials, configuration as code and the control plane.',
   },
   {
-    id: 'contributor',
-    icon: '🧑‍💻',
-    title: 'Contributor track',
-    description: 'Change the code: architecture, providers, the flow engine, dev setup and how work gets done.',
+    id: 'expert',
+    icon: '🎓',
+    title: 'Expert',
+    description: 'How ThunderID works inside: the architecture, entities and entity types, caching, providers, the flow engine and the embeddable engine.',
   },
 ];

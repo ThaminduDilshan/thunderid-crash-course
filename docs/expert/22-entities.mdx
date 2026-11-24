@@ -1,0 +1,112 @@
+---
+title: "22. Entities and entity types"
+sidebar_label: "22. Entities and entity types"
+description: "The one model behind users, agents and applications: what an entity holds, where each part is stored, and what an entity type defines."
+---
+
+:::note[🎯 What you'll learn]
+
+- How users, agents and applications share one model: the **entity**
+- What an entity holds, and which database each part lives in
+- What an **entity type** defines, and how user types and agent types map to it
+- How identifiers, sharing, groups and roles build on entities
+
+:::
+
+## The idea
+
+The APIs and consoles have three separate resources: users, agents and applications. Underneath, the `entity` package stores all three the same way, as an **entity** with a category. The `user`, `agent` and `application` services build on the entity service and add what's specific to each.
+
+That's why a user, an agent and an app can all hold credentials, belong to an organization unit, join groups and hold roles. Each one only needs to be built once.
+
+## Categories
+
+| Category | Public resource | Entity type | System attributes |
+| --- | --- | --- | --- |
+| `user` | Users | A user type (Ex: `person`) | None |
+| `agent` | Agents | An agent type (Ex: `default`) | `clientId`, `owner`, `kind`, `validUntil` |
+| `app` | Applications | None. The type is always `application`. | `name`, `description`, `clientId` |
+
+The category is fixed. An app can't become a user.
+
+## What an entity holds
+
+An entity is one `ENTITY` row in `entitydb`:
+
+- **`ATTRIBUTES`:** the values its entity type defines (Ex: `username`, `email`). Apps have none.
+- **`SYSTEM_ATTRIBUTES`:** values ThunderID owns, outside any schema (Ex: an app's `clientId`, an agent's `owner`).
+- **`CREDENTIALS`:** schema credentials, the attributes the type marks as `credential` (Ex: a user's `password`). Hashed, and never returned by the API.
+- **`SYSTEM_CREDENTIALS`:** secrets ThunderID owns (Ex: an agent's `clientSecret`, an app's `flowSecret`).
+- **`OU_ID`** and **`PROJECT_ID`:** the organization unit that owns it, and the project it was created in.
+
+Two parts live elsewhere:
+
+- **State** (`ACTIVE` or `SUSPENDED`) and runtime attributes are in `ENTITY_RUNTIME_DATA` in `runtime_persistent`. That's account access state, kept apart from the profile and never cached with it.
+- **Identifiers** are in `ENTITY_IDENTIFIER`, next to the entity.
+
+## Identifiers and uniqueness
+
+Looking a user up by `username` would mean scanning JSON on every sign-in. So selected attributes are copied into `ENTITY_IDENTIFIER` rows, one per name and value:
+
+- `SOURCE` is `attribute` for an indexed schema attribute, or `system` for a system attribute (Ex: `clientId`).
+- The user, agent and application packages each add names to one shared set, which applies to every entity (Ex: `username` and `email` from `user.indexed_attributes`, `name` from agents).
+- A lookup on indexed names uses this table. Other names fall back to a JSON search.
+- The table has no unique constraint across entities. `unique` in a schema is enforced by the entity service, across the whole deployment ([module 4](/docs/next/beginner/users-and-user-types)).
+
+## Entity types
+
+An **entity type** (`entitytype` package) is the schema behind user types and agent types. Its category is `user` or `agent` only. It's one `ENTITY_TYPES` row in `configdb`:
+
+- **Schema:** each attribute has a type (`string`, `number`, `boolean`, `object` or `array`) and rules: `required`, `unique`, `credential`, `enum` and `regex`.
+- **System attributes:** which attribute is the display name, and the primary email and mobile used for notifications.
+- **Ownership:** an owning OU, and a handle unique per category.
+- **Self sign-up:** whether a registration flow may create entities of this type.
+
+A few rules the service enforces:
+
+- An OU holds at most one agent type. User types have no such limit.
+- An entity's `TYPE` holds the type's handle. There's no foreign key, so the entity service checks it.
+- Removing an attribute from a type drops its stored value from each entity on that entity's next update.
+
+## Sharing, groups and roles
+
+- **Sharing:** an entity is owned by one OU and can be shared into others. Users, agents and apps all register as shareable categories, so one OU's listing can show what it owns and what's shared into it ([module 12](/docs/next/intermediate/organization-units)).
+- **Groups and roles:** group members and role assignees are typed `user`, `agent`, `app` or `group`. The group service checks each member against its entity's category.
+
+## 🧪 Lab
+
+With the quickstart pack from Lab 0 running, open the data plane's databases read-only from the pack folder. `sqlite3` ships with macOS and most Linux distributions.
+
+1. Compare a user, an agent and an app:
+
+   ```bash
+   sqlite3 -readonly dp/database/entitydb.db \
+     "SELECT CATEGORY, TYPE, SYSTEM_ATTRIBUTES,
+             (SELECT group_concat(key) FROM json_each(CREDENTIALS)),
+             (SELECT group_concat(key) FROM json_each(SYSTEM_CREDENTIALS))
+      FROM ENTITY;"
+   ```
+
+   Your user's password is under `CREDENTIALS`, and the agent's client secret under `SYSTEM_CREDENTIALS`.
+
+2. See which values are indexed for lookup:
+
+   ```bash
+   sqlite3 -readonly dp/database/entitydb.db "SELECT NAME, VALUE, SOURCE FROM ENTITY_IDENTIFIER;"
+   ```
+
+3. Find each entity's state, then the types:
+
+   ```bash
+   sqlite3 -readonly dp/database/runtime_persistent.db "SELECT ENTITY_ID, STATE FROM ENTITY_RUNTIME_DATA;"
+   sqlite3 -readonly dp/database/configdb.db "SELECT CATEGORY, HANDLE, SYSTEM_ATTRIBUTES FROM ENTITY_TYPES;"
+   ```
+
+## Recap
+
+- Users, agents and apps are all **entities**, with a fixed category.
+- An entity's profile and credentials are in `entitydb`. Its state is in `runtime_persistent`.
+- Indexed attributes are copied into `ENTITY_IDENTIFIER` for fast lookup. Uniqueness is the entity service's job.
+- An **entity type** is the schema for users or agents. Apps have none.
+
+Go deeper: [User types](https://thunderid.dev/docs/next/guides/users/user-types), `backend/internal/entity`, `backend/internal/entitytype`.

@@ -26,7 +26,7 @@ Wayfinder adds a travel concierge: an AI agent called `WAYFINDER-CONCIERGE` that
 
 ## What an agent is
 
-An agent is an entity of category `agent` ([module 4](/docs/next/beginner/users-and-user-types)), shaped by an **agent type** the same way a user is shaped by a user type. The bootstrap agent type is `default`.
+An agent is shaped by an **agent type** the same way a user is shaped by a user type ([module 4](/docs/next/beginner/users-and-user-types)). The bootstrap agent type is `default`.
 
 - **OAuth client:** an agent can have an OAuth client, so it can get tokens.
 - **Owner:** it can record the user or app that owns it.
@@ -69,7 +69,7 @@ curl -sk -u '<client-id>:<client-secret>' -d grant_type=client_credentials $DP/o
 ## Recap
 
 - AI agents get identities of their own, so their actions are traceable, limited and revocable.
-- An **agent** is an entity with an **agent type**, and it can hold roles like a person.
+- An **agent** has an **agent type**, and it can hold roles like a person.
 - The simplest pattern: the agent gets its **own token** with `client_credentials`.
 
 Go deeper: [Agents](https://thunderid.dev/docs/next/guides/agents), [Agent authentication](https://thunderid.dev/docs/next/guides/agents/authentication), [AI agents use case](https://thunderid.dev/docs/next/use-cases/ai-agents/overview).

@@ -24,9 +24,11 @@ export const CHECKPOINTS: Record<TrackId, string[]> = {
     "I've exported configuration as YAML and imported it back",
     "I can follow a change from the Control Plane Console to a data plane"
   ],
-  "contributor": [
-    "I can run ThunderID from source and hit a breakpoint in the flow engine",
+  "expert": [
+    "I can explain how users, agents and apps share the entity model, and where each part is stored",
+    "I can explain why in-memory caching needs Redis once there's more than one node",
     "I know which provider an executor uses to write a user or an agent",
-    "I've run `make pr_checks` and know the path from an issue to a merged PR"
+    "I can run ThunderID from source and hit a breakpoint in the flow engine",
+    "I can name what a host must supply to embed the engine"
   ]
 };
