@@ -1,0 +1,36 @@
+---
+title: "20. Also in the box"
+sidebar_label: "20. Also in the box"
+description: "Sessions and SSO, logout, consent, account protection, design, localization, observability, ThunderID's own MCP server and deployment."
+---
+
+:::note[🎯 What you'll learn]
+
+Smaller features worth knowing about before you need them. Skim the table, and follow a link when one becomes relevant.
+
+:::
+
+:::info[🧳 In Wayfinder]
+
+Wayfinder customers shouldn't see a sign-in screen every time they open the app. A **session checkpoint** in the sign-in flow lets a returning customer skip the password step until the session expires (by default after 2 hours idle or 8 hours in total).
+
+:::
+
+| Topic | In one line | Read |
+| --- | --- | --- |
+| Sessions and SSO | A session belongs to one flow: apps on the same flow share sign-in, and apps on different flows never do. A **Check SSO Session** node and a **Save / Load Session** node mark the steps a session can skip. | [Sessions](https://thunderid.dev/docs/next/key-concepts/authentication/sessions), [SSO for flows](https://thunderid.dev/docs/next/guides/flows/single-sign-on) |
+| Logout | RP-initiated logout ends the session from the app. Back-channel logout tells other apps' servers. | [RP-initiated](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/rp-initiated-logout), [Back-channel](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/backchannel-logout) |
+| Consent | A User Consent step asks the user to approve attributes, permissions and authorization details. The token carries only what they approve. | [Consent](https://thunderid.dev/docs/next/guides/consent) |
+| Account protection | A **lock** forms after repeated failed attempts. A **suspension** is an admin's decision, and it also revokes existing sessions and tokens. | [Account protection](https://thunderid.dev/docs/next/guides/account-protection/overview) |
+| Design | **Themes** (colours, typography) and **layouts** (screen structure) style Gate's screens, independently of each other. | [Design](https://thunderid.dev/docs/next/guides/design/overview) |
+| Localization | Every screen string is a language + namespace + key, and you can override any of them. | [Localization](https://thunderid.dev/docs/next/guides/i18n/localization) |
+| Observability | Structured events for token issuance, flow execution and authorization decisions, sent to the console, a file or OpenTelemetry. Off by default. | [Observability](https://thunderid.dev/docs/next/deployment/observability) |
+| ThunderID's MCP server | `/mcp` lets an AI coding assistant manage applications and flows, behind OAuth and system permissions. | [MCP server](https://thunderid.dev/docs/next/working-with-ai/mcp-server) |
+| Agent skills | Skills and Claude and Codex plugins that set up ThunderID and add sign-in to an app from a prompt. | [Skills](https://thunderid.dev/docs/next/working-with-ai/skills) |
+| Deployment | Docker, Kubernetes (Helm) and OpenChoreo, with production guidelines. | [Deployment paths](https://thunderid.dev/docs/next/deployment/deployment-paths), [Production guidelines](https://thunderid.dev/docs/next/deployment/production-guidelines) |
+
+:::info[🧭 Wayfinder step]
+
+Do [Keep them signed in](https://thunderid.dev/docs/next/use-cases/b2c/build-sessions): add the session checkpoint to Wayfinder's sign-in flow.
+
+:::

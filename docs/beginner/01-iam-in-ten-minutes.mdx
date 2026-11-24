@@ -1,29 +1,93 @@
 ---
 title: "1. IAM in ten minutes"
 sidebar_label: "1. IAM in ten minutes"
+description: "Identity, authentication, authorization, OAuth 2.0, OpenID Connect and tokens, explained from scratch."
 ---
 
-Identity and Access Management (IAM) answers two questions for every request: who is this, and what are they allowed to do.
+:::note[🎯 What you'll learn]
 
-- **Identity:** a record of a person, a machine or an AI agent, with attributes (email, name) and credentials (password, passkey, client secret).
-- **Authentication (authn):** proving who you are. Ex: password, one-time code (OTP), passkey, signing in with Google.
-- **Authorization (authz):** deciding what an authenticated identity can do. Ex: a role that grants `orders:read`.
-- **Identity provider (IdP):** the system that does authentication and issues proof of it. ThunderID is an IdP. Google or another company's IdP can be an upstream IdP that ThunderID trusts (federation).
+- What identity and access management (IAM) is for
+- The difference between authentication and authorization
+- How OAuth 2.0 and OpenID Connect fit together, and what a token is
+
+No ThunderID yet. This module gives you the vocabulary every later module uses.
+
+:::
+
+## The idea
+
+Every time someone uses your app, two questions come up:
+
+1. **Who is this?** Is it really Alice, or someone who knows her email address?
+2. **What may they do?** Alice can see her own bookings. Can she cancel someone else's?
+
+Answering the first question is **authentication** (often shortened to *authn*). Answering the second is **authorization** (*authz*). IAM is the job of answering both, reliably, for every request.
+
+You could build this yourself: a users table, password hashing, a login form, session cookies, permission checks. Most teams quickly find it's a lot more than that: password resets, multi-factor sign-in, "sign in with Google", locking out attackers, letting other apps use your API safely. An **identity provider (IdP)** does all of that for you. ThunderID is an IdP.
+
+:::info[🧳 In Wayfinder]
+
+Throughout this course you'll build the identity layer for **Wayfinder**, a travel booking app.
+
+- When a traveler opens Wayfinder and signs in, ThunderID **authenticates** them.
+- When the Wayfinder app asks its booking API for the traveler's trips, the API checks the traveler is **authorized** to read bookings.
+
+The Wayfinder app and its API never see or store a password.
+
+:::
+
+## The words you'll see everywhere
+
+| Term | Meaning | Wayfinder example |
+| --- | --- | --- |
+| Identity | A record of a person, machine or AI agent, with attributes and credentials | A traveler with a username, an email and a password |
+| Credential | Something that proves an identity | A password, a passkey, a one-time code |
+| Identity provider (IdP) | The system that authenticates people and issues proof of it | ThunderID |
+| Federation | Trusting another IdP to authenticate someone | "Sign in with Google" |
 
 ## OAuth 2.0 and OpenID Connect
 
-Most of ThunderID's external surface is these two standards.
+ThunderID speaks two open standards, so any app or library that knows them works with it.
 
-- **OAuth 2.0** ([RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)) is about delegated access. A **client** (your app) gets an **access token** from an **authorization server** (ThunderID) and presents it to a **resource server** (your API).
-- **OpenID Connect (OIDC)** sits on top of OAuth 2.0 and adds sign-in. The client also gets an **ID token** that says who the user is.
-- A **grant type** is a way to get a token. The common ones: `authorization_code` (a user signs in through a browser redirect), `client_credentials` (a service gets a token for itself), `refresh_token` (get a new access token without signing in again).
-- **PKCE** ([RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636)) protects the authorization code from being stolen and replayed. Browser and mobile apps always use it.
+**OAuth 2.0** ([RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)) is about letting an app call an API on someone's behalf. It has four roles:
+
+- The **resource owner**: the person whose data it is (the traveler).
+- The **client**: the app that wants access (the Wayfinder web app).
+- The **authorization server**: the one that hands out access (ThunderID).
+- The **resource server**: the API being protected (Wayfinder's booking API).
+
+The client gets an **access token** from the authorization server and sends it with every API call.
+
+**OpenID Connect (OIDC)** sits on top of OAuth 2.0 and adds sign-in. Along with the access token, the client gets an **ID token** that says who the user is.
+
+A **grant type** is one way of getting a token:
+
+- `authorization_code`: a person signs in through the browser. Used by almost every user-facing app.
+- `client_credentials`: a service gets a token for itself, with no person involved.
+- `refresh_token`: get a fresh access token without asking the person to sign in again.
+
+**PKCE** ([RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636), say "pixie") stops a stolen authorization code from being used by anyone else. Browser and mobile apps always use it.
 
 ## Tokens
 
-- **Access token:** sent to APIs. Carries `scope` (what it's allowed to do) and `aud` (which API it's for).
-- **ID token:** read by the client. Carries `sub` (the user's identifier) and profile claims.
-- **Refresh token:** used only at the token endpoint to get new tokens.
-- ThunderID issues tokens as signed **JWTs** ([RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)). Anyone can verify the signature with the public keys at the JWKS endpoint. Paste one into a JWT decoder during the labs to see the claims.
+A token is a small signed document. ThunderID issues them as JSON Web Tokens (**JWTs**, [RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)). Anyone can check a JWT's signature with the issuer's public keys, so an API can trust a token without calling ThunderID on every request.
+
+| Token | Who reads it | What it says |
+| --- | --- | --- |
+| Access token | The API | `scope` (what it allows), `aud` (which API it's for), `sub` (who it's for) |
+| ID token | The app | Who the user is: `sub`, name, email |
+| Refresh token | Only ThunderID's token endpoint | Nothing you read: you trade it for new tokens |
+
+:::tip[Try it now]
+
+Paste any JWT into a JWT decoder such as [jwt.io](https://jwt.io) to see its claims. You'll do this with real ThunderID tokens from [Lab 0](/docs/beginner/lab-0) onwards.
+
+:::
+
+## Recap
+
+- **Authentication** proves who someone is. **Authorization** decides what they may do.
+- **OAuth 2.0** gets an app an access token for an API. **OIDC** adds sign-in with an ID token.
+- Tokens are signed JWTs. `scope` and `aud` are the claims an API cares about most.
 
 Go deeper: [Tokens](https://thunderid.dev/docs/next/key-concepts/tokens), [Authorization](https://thunderid.dev/docs/next/key-concepts/authorization).

@@ -1,7 +1,20 @@
 ---
-title: "19. Providers"
-sidebar_label: "19. Providers"
+title: "22. Providers"
+sidebar_label: "22. Providers"
+description: "The interfaces the runtime depends on, why they exist, and the rule executors follow when they write."
 ---
+
+:::note[🎯 What you'll learn]
+
+- What a provider is, and the four reasons the pattern exists
+- The providers you'll meet most
+- Why executors write through providers, not services
+
+:::
+
+## The idea
+
+The flow engine and the OAuth server don't call services like the user service directly. They depend on small interfaces called providers. That keeps the runtime embeddable, makes parts swappable, and keeps import cycles out of the code.
 
 A provider is an interface the runtime (flows, OAuth, the Direct API) depends on instead of a concrete service. Most are declared in `backend/pkg/thunderidengine/providers/interface.go`. They exist for four reasons:
 
@@ -28,4 +41,12 @@ Others cover OUs, flows, resource servers, IdPs, consent, i18n, authorization, a
 
 **The REST authn provider:** set `authn_provider.rest.*` in the deployment config and list the credential types it owns (even `password`). Those credentials go to your service on every sign-in, and there's no fallback to the default provider for them. Two providers claiming one credential type fail at startup.
 
-🧪 **Lab:** open `servicemanager.go` and follow how the authn provider manager is built and handed to the Direct API, the executors and OAuth. Then read `provisioning_executor.go` and find the `UserMgtProvider` call.
+## 🧪 Lab
+
+open `servicemanager.go` and follow how the authn provider manager is built and handed to the Direct API, the executors and OAuth. Then read `provisioning_executor.go` and find the `UserMgtProvider` call.
+
+## Recap
+
+- A **provider** is an interface the runtime depends on instead of a concrete service.
+- The authn provider manager routes each credential type to the provider that owns it.
+- Executors write users and agents through the mgt providers, never the services.

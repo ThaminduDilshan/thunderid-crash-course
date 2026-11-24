@@ -20,30 +20,30 @@ const TRACKS: Track[] = [
     icon: '🌱',
     name: 'Beginner',
     modules: 'Modules 1 to 7',
-    audience: 'Everyone',
-    outcome: 'IAM basics, organization units, identities, access and user journeys. Get ThunderID running locally.',
+    audience: 'Everyone, no IAM background needed',
+    outcome: 'IAM basics, running ThunderID, users, applications, flows and agents. Finish with your own app signing people in.',
     to: '/docs/beginner',
   },
   {
     icon: '🛠️',
     name: 'Intermediate',
-    modules: 'Modules 8 to 12',
+    modules: 'Modules 8 to 14',
     audience: 'Everyone',
-    outcome: 'Register apps and agents, sign people in three different ways, and wire in identity providers and SDKs.',
+    outcome: 'Build Wayfinder for real: access rules, journeys, social sign-in, three ways to sign in, organizations and MCP.',
     to: '/docs/intermediate',
   },
   {
     icon: '🚀',
     name: 'Advanced',
-    modules: 'Modules 13 to 17',
+    modules: 'Modules 15 to 20',
     audience: 'App builders and operators',
-    outcome: 'The protocol catalogue, verifiable credentials, GitOps-style configuration and the control plane.',
+    outcome: 'B2B organizations, the protocol catalogue, verifiable credentials, configuration as code and the control plane.',
     to: '/docs/advanced',
   },
   {
     icon: '🧑‍💻',
     name: 'Contributor track',
-    modules: 'Modules 18 to 22',
+    modules: 'Modules 21 to 25',
     audience: 'Anyone changing ThunderID',
     outcome: 'Find your way around the code, run and debug it from source, and get a pull request merged.',
     to: '/docs/contributor',
@@ -53,7 +53,7 @@ const TRACKS: Track[] = [
 const HIGHLIGHTS = [
   {icon: '🧪', title: 'Hands-on from the start', text: 'Run ThunderID in Lab 0, then poke every concept with curl, the consoles and the code.'},
   {icon: '🧭', title: 'One storyline', text: 'Build the identity layer of Wayfinder, a sample travel app, one piece per module.'},
-  {icon: '✅', title: 'Checkpoints', text: 'Each level ends with a short list of what you should be able to do before moving on.'},
+  {icon: '📈', title: 'Track your progress', text: 'Mark modules complete, tick each checkpoint and watch the milestones fill in. Saved in your browser.'},
 ];
 
 function Hero(): ReactNode {
@@ -74,7 +74,7 @@ function Hero(): ReactNode {
             Jump to Lab 0
           </Link>
         </div>
-        <p className={styles.meta}>22 modules · 4 tracks · targets ThunderID 2.0 (main)</p>
+        <p className={styles.meta}>25 modules · 4 tracks · progress saved in your browser · targets ThunderID 2.0</p>
       </div>
     </header>
   );

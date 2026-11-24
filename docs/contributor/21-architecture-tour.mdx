@@ -1,7 +1,20 @@
 ---
-title: "18. Architecture tour"
-sidebar_label: "18. Architecture tour"
+title: "21. Architecture tour"
+sidebar_label: "21. Architecture tour"
+description: "Binaries, the repository layout, domain packages, the four databases and the embeddable engine."
 ---
+
+:::note[🎯 What you'll learn]
+
+- Where things live in the ThunderID repository
+- How a domain package is laid out
+- What each of the four databases holds
+
+:::
+
+## The idea
+
+ThunderID is one Go codebase that builds two binaries, plus four React apps. Before you change anything, it helps to know where each piece lives and how a request travels through a package.
 
 ## Repository map
 
@@ -36,6 +49,13 @@ Each can be SQLite (the default) or PostgreSQL. The cache is in memory by defaul
 
 ## The embeddable engine
 
-`backend/pkg/thunderidengine` lets another Go program embed flow execution and the OAuth/OIDC routes on its own HTTP mux. The embedder supplies the providers ([module 19](/docs/contributor/providers)). It gets no management APIs, no Gate or consoles, no SSO sessions, and none of the server's HTTP middleware. The data plane binary doesn't use it: it calls the same internal `Initialize` functions directly. Anything in `pkg/` is public API, so changing it needs care.
+`backend/pkg/thunderidengine` lets another Go program embed flow execution and the OAuth/OIDC routes on its own HTTP mux. The embedder supplies the providers ([module 22](/docs/contributor/providers)). It gets no management APIs, no Gate or consoles, no SSO sessions, and none of the server's HTTP middleware. The data plane binary doesn't use it: it calls the same internal `Initialize` functions directly. Anything in `pkg/` is public API, so changing it needs care.
+
+
+## Recap
+
+- Two binaries from one codebase: the data plane and the control plane.
+- Each domain package is `handler → service → store`, wired in `init.go`.
+- Four databases split configuration, identities, short-lived and long-lived runtime data.
 
 Go deeper: [ARCHITECTURE.md](https://github.com/thunder-id/thunderid/blob/main/ARCHITECTURE.md), [backend/AGENTS.md](https://github.com/thunder-id/thunderid/blob/main/backend/AGENTS.md), [Backend development](https://thunderid.dev/community/contributing/contributing-code/backend-development/overview).

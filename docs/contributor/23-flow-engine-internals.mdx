@@ -1,7 +1,20 @@
 ---
-title: "20. Flow engine internals"
-sidebar_label: "20. Flow engine internals"
+title: "23. Flow engine internals"
+sidebar_label: "23. Flow engine internals"
+description: "How one request runs through the flow engine, how execution state is kept, and how to add an executor."
 ---
+
+:::note[🎯 What you'll learn]
+
+- The packages that make up the flow engine
+- What happens to one request, step by step
+- How to add an executor
+
+:::
+
+## The idea
+
+You've built flows in the console. This module opens the engine that runs them, so you can debug a flow and extend it with your own executor.
 
 The flow engine lives in `backend/internal/flow/`: `mgt` (flow CRUD, validation, versions), `flowexec` (the engine and `POST /flow/execute`), `core` (node implementations), `executor` (the built-in executors), `executormeta` (the executor catalogue) and `interceptor`.
 
@@ -26,6 +39,14 @@ An executor implements `providers.Executor` (`backend/pkg/thunderidengine/provid
 3. Add its metadata, including the flow types it's allowed in, to `executormeta/catalog.go`. `catalog_parity_test.go` fails if the catalogue and the executor disagree.
 4. Register it in `newBuiltInExecutorRegistrars` in `executor/register.go`.
 
-A deployment can enable a subset of executors with the `flow.executors` config. Executors never call user or agent services directly to write. They go through the user and agent management providers ([module 19](/docs/contributor/providers)).
+A deployment can enable a subset of executors with the `flow.executors` config. Executors never call user or agent services directly to write. They go through the user and agent management providers ([module 22](/docs/contributor/providers)).
 
-🧪 **Lab:** set a breakpoint in `flowexec/engine.go` with `make debug_backend`, then run the [module 9](/docs/intermediate/three-ways-to-sign-in) `curl` loop and step through one request.
+## 🧪 Lab
+
+set a breakpoint in `flowexec/engine.go` with `make debug_backend`, then run the [module 11](/docs/intermediate/three-ways-to-sign-in) `curl` loop and step through one request.
+
+## Recap
+
+- Each request runs interceptors, then nodes, until a node pauses or the graph ends.
+- Execution state is encrypted and stored with a TTL fixed at the start.
+- A new executor needs a constant, catalogue metadata and a registrar.

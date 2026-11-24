@@ -1,0 +1,90 @@
+---
+title: "5. Applications: your first sign-in"
+sidebar_label: "5. Applications"
+description: "Register an application, pick its type, and sign a user in from a React app."
+---
+
+:::note[🎯 What you'll learn]
+
+- What an **application** is in ThunderID, and which type to choose
+- What ThunderID needs to know about an app before it can sign people in
+- How to get a real sign-in working in about fifteen minutes
+
+:::
+
+## The idea
+
+ThunderID won't hand tokens to just anyone. An app first has to be **registered**: it gets an identity of its own (a client ID, sometimes a secret) and a set of rules ThunderID enforces on its behalf. Which URLs may people be sent back to? Which ways of getting a token may it use? Which kinds of user may sign in to it?
+
+In OAuth terms, the application is the **client**: it's the one asking for access, on behalf of the person using it.
+
+:::info[🧳 In Wayfinder]
+
+Wayfinder's web frontend runs in the browser, so it's registered as a **browser app**:
+
+- Grant type `authorization_code`, with PKCE required
+- Redirect URI: the Wayfinder app's own URL
+- Allowed user types: `Customer` only, so staff accounts can't sign in to the customer app
+
+:::
+
+## Application types
+
+The `type` is required and can't change after the app is created. It decides how the app is allowed to sign people in.
+
+| Type | For | Signs in through |
+| --- | --- | --- |
+| `browser` | Single-page apps: React, Vue, plain JavaScript | Redirect only: authorization code + PKCE, as a public client |
+| `fullstack` | Server-rendered apps: Next.js, Express | Redirect, or its own screens with a Flow Secret ([module 11](/docs/intermediate/three-ways-to-sign-in)) |
+| `mobile` | iOS, Android, Flutter | Redirect, or its own screens with platform attestation |
+| `m2m` | Backend services with no user | `client_credentials` only |
+| `mcp` | MCP clients ([module 14](/docs/intermediate/mcp-and-delegation)) | Redirect: authorization code + refresh |
+| `custom` | Anything else, including apps registered through dynamic client registration | Depends on its OAuth settings |
+
+The console's **templates** (React, Next.js, Android, Wallet and so on) only prefill these settings. Pick the one closest to your stack.
+
+## What's inside an application
+
+Under the hood an application is an entity of category `app` ([module 4](/docs/beginner/users-and-user-types)) with two sets of settings:
+
+- **Sign-in settings:** which flows it runs ([module 6](/docs/beginner/flows)), its theme and layout, which user types and agent types may sign in, and which attribute becomes the token's `sub`.
+- **OAuth settings:** grant types, redirect URIs, how the client authenticates, PKCE, whether it's public or confidential, token lifetimes and the claims each token carries.
+
+A few rules worth knowing:
+
+- A **public client** (one that can't keep a secret, like a browser app) must use client authentication `none` and PKCE.
+- A **client secret** is shown once, in the response that creates the app. Lose it and you regenerate it with `POST /applications/{id}/client-secret/regenerate`.
+- The token's `sub` is the user's ID, unless `subjectAttribute` maps a user type to another unique attribute, such as `email`.
+
+## 🧪 Lab: sign in from a React app
+
+Follow the [React quickstart](https://thunderid.dev/docs/next/getting-started/connect-your-application/react). It creates a Vite app, installs `@thunderid/react`, and adds sign-in and sign-out buttons.
+
+Two 2.0 notes while you follow it:
+
+- Create the application in the **Control Plane Console** ([https://localhost:8095/console](https://localhost:8095/console)), not at `:8090`.
+- Point the SDK's `baseUrl` at the **data plane**, [`https://localhost:8090`](https://localhost:8090). That's where sign-in runs.
+
+Then:
+
+1. Sign in. Notice the address bar: you leave your app, sign in on Gate, and come back.
+2. Open the browser's Network tab and find the `/oauth2/authorize` request, the `/flow/execute` calls Gate makes, and the final `/oauth2/token` call.
+3. Copy the ID token from the token response and decode it. Find `sub`, `iss` and `aud`.
+
+:::tip[Also try]
+
+Create an `m2m` app and get a token for it with no user involved:
+
+```bash
+curl -sk -u '<client-id>:<client-secret>' -d grant_type=client_credentials $DP/oauth2/token | jq
+```
+
+:::
+
+## Recap
+
+- An **application** is a registered client with its own rules.
+- The **type** decides how it may sign people in. Browser apps always use redirect + PKCE.
+- You've signed a real user in. The rest of the course explains everything that happened in between.
+
+Go deeper: [Manage applications](https://thunderid.dev/docs/next/guides/applications/manage-applications), [Application settings](https://thunderid.dev/docs/next/guides/applications/application-settings), [Token attributes](https://thunderid.dev/docs/next/guides/applications/configure-token-attributes).

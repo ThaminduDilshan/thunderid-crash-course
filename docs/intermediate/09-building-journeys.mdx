@@ -1,0 +1,97 @@
+---
+title: "9. Building journeys"
+sidebar_label: "9. Building journeys"
+description: "Flow types, how an app picks its flows, the full node set, and the executors you build journeys from."
+---
+
+:::note[🎯 What you'll learn]
+
+- Every kind of journey ThunderID can run, beyond sign-in
+- How an application picks its flows, and what happens when it doesn't
+- The executors you build journeys from
+
+You met flows in [module 6](/docs/beginner/flows). This module goes from "I can read one" to "I can build one".
+
+:::
+
+## Flow types
+
+Each flow has a type, which says what journey it is.
+
+| Type | Used for |
+| --- | --- |
+| `AUTHENTICATION` | Sign-in |
+| `REGISTRATION` | Self sign-up |
+| `RECOVERY` | Forgot password and other account recovery |
+| `SIGNOUT` | Ending a sign-in session |
+| `USER_ONBOARDING` | An admin onboarding a user |
+| `ADMINISTRATION` | Operational flows an admin designs |
+| `SELF` <V2 /> | A signed-in user acting on their own account |
+| `ADMIN_INITIATED` <V2 /> | Started by an admin, finished by the user |
+| `INVITATION` <V2 /> | Inviting someone into an organization unit |
+| `DEVICE_GRANT` <V2 /> | The device authorization grant ([module 16](/docs/advanced/oauth-oidc)) |
+
+There's also `SYSTEM` <V2 />: flows the server runs internally, for example before an entity is deleted. No API can create or start one.
+
+:::info[🧳 In Wayfinder]
+
+Wayfinder builds four journeys on top of the bundled sign-in:
+
+- **Registration:** collect a username and password, create a `Customer` user, and assign the `Traveler` role, so a new customer can book from their first session.
+- **Recovery:** identify the customer, email a recovery link, let them set a new password.
+- **Staff onboarding:** an admin with the `OpsAdmin` role invites a teammate by email. The teammate joins with the staff role the admin picked.
+- **Sign-out:** end the session ThunderID holds.
+
+:::
+
+## How an application gets its flows
+
+An application points at flows by ID: `authFlowId`, `registrationFlowId`, `recoveryFlowId`, `signOutFlowId` and `deviceGrantFlowId` <V2 />. Registration and recovery also have an on/off switch.
+
+Leave an ID empty and ThunderID fills it in: first from the organization unit's flow for that type, then from the server default (Ex: `default-flow` for sign-in). If the flow an app points at is deleted, sign-in falls back to the default.
+
+## All the node types
+
+| Node | What it does |
+| --- | --- |
+| `START` / `END` | Entry and exit |
+| `PROMPT` | Shows a screen: inputs, actions and the UI component tree (`meta`) |
+| `TASK_EXECUTION` | Runs an executor. Branches with `onSuccess`, `onFailure` and `onIncomplete`. |
+| `CALL` | Runs another flow, such as jumping from sign-in to recovery |
+| `VARIABLES` <V2 /> | Declares flow variables, referenced as `{{var(id)}}`. Useful when a shared flow needs a different value per organization ([module 15](/docs/advanced/b2b)). |
+
+## Executors
+
+An executor is one unit of work. Here are the ones you'll reach for most:
+
+| Purpose | Executors |
+| --- | --- |
+| Authentication | `CredentialsAuthExecutor`, `PasskeyAuthExecutor`, `MagicLinkExecutor`, `IdentifyingExecutor`, `AuthAssertExecutor` |
+| Federation | `GoogleOIDCAuthExecutor`, `GithubOAuthExecutor`, `OIDCAuthExecutor`, `OAuthExecutor`, `OpenID4VPVerifyExecutor` |
+| One-time codes and messages | `OTPExecutor`, `EmailExecutor`, `SMSExecutor` |
+| Creating and updating users | `ProvisioningExecutor`, `AttributeCollector`, `CredentialSetter`, `UserTypeResolver`, `OUExecutor` |
+| Authorization and consent | `AuthorizationExecutor`, `PermissionValidator`, `ConsentExecutor` |
+| Sessions | `SSOCheckExecutor`, `SessionExecutor`, `SessionSignOutExecutor` |
+| Integration | `HTTPRequestExecutor`, `ExtensionExecutor` <V2 /> (calls an HTTP connection) |
+
+Some executors only work in some flow types. Ex: the session executors only in `AUTHENTICATION`.
+
+Flows are versioned: `GET /flows/{id}/versions` lists them, and `POST /flows/{id}/restore` rolls back.
+
+## 🧪 Lab
+
+Follow [Build a flow](https://thunderid.dev/docs/next/guides/flows/build-a-flow) to make a sign-in flow with password, Google and SMS OTP, and assign it to your React app from [module 5](/docs/beginner/applications). You can skip the Google and SMS steps until [module 10](/docs/intermediate/connections) if you don't have those accounts yet.
+
+:::info[🧭 Wayfinder steps]
+
+Do [Build the flows](https://thunderid.dev/docs/next/use-cases/b2c/build-flows), then [Onboard internal staff](https://thunderid.dev/docs/next/use-cases/b2c/build-onboarding).
+
+:::
+
+## Recap
+
+- Every journey is a flow with a **type**: sign-in, sign-up, recovery, sign-out, invitation and more.
+- An app points at its flows by ID, and empty IDs fall back to the OU's and then the server's defaults.
+- Journeys are assembled from **executors**. The Flow Builder is the friendliest way to wire them.
+
+Go deeper: [Flow concepts](https://thunderid.dev/docs/next/guides/flows/flow-concepts), [Advanced configurations](https://thunderid.dev/docs/next/guides/flows/advanced-configurations), [Share a flow](https://thunderid.dev/docs/next/guides/flows/share-a-flow), [Intents](https://thunderid.dev/docs/next/guides/intents).

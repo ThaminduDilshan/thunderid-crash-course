@@ -1,0 +1,56 @@
+---
+title: "18. Declarative configuration, import and export"
+sidebar_label: "18. Declarative config"
+description: "Resources as YAML: importing, declarative files, bootstrap, store modes, export and value references."
+---
+
+:::note[🎯 What you'll learn]
+
+- How every ThunderID resource can live in YAML
+- The three ways YAML gets into a server
+- How export keeps secrets out of your files
+
+:::
+
+## The idea
+
+Clicking through a console is fine for learning, but not for running three environments that must stay identical. ThunderID lets you write every resource (OUs, user types, apps, flows, roles, connections, themes and so on) as YAML with a `resource_type`. Configuration becomes something you review in a pull request, version in Git and apply the same way everywhere: GitOps for identity.
+
+:::info[🧳 In Wayfinder]
+
+The Wayfinder sample ships its whole setup as one YAML bundle plus a `thunderid.env` file. The B2C sample page imports it in one step, instead of making you create every user type, role and app by hand.
+
+:::
+
+## Three ways YAML gets in
+
+| Way | What happens | Editable afterwards? |
+| --- | --- | --- |
+| `POST /import` | Resources are created or updated in the database | Yes, like anything made in the console |
+| Declarative files | Files in the deployment's resources directory load at startup | No. They're read-only, and writes return `403`. |
+| `thunderid bootstrap` | `setup.sh` imports the default bundle (`backend/cmd/server/bootstrap/*.yaml`) before the server starts | Yes |
+
+**Store modes.** Each resource type has a store mode: `mutable` (database only), `declarative` (files only) or `composite` (both, with file-defined entries read-only). The global `declarative_resources.enabled` sets the default.
+
+## Export, without leaking secrets
+
+`POST /export` writes chosen resources back out as YAML. Values that differ per environment come out as **references** instead of literals:
+
+- `var:` <V2 /> names an ordinary value, such as a client ID. It's read back as it is.
+- `sec:` <V2 /> names a secret, such as a client secret. It's never read back.
+
+The target server holds the actual values (`/variables`, `/secrets`) and fills them in at import. A secret never travels in the YAML.
+
+## 🧪 Lab
+
+1. Read `backend/cmd/server/bootstrap/01-default-resources.yaml` in the ThunderID repo. Find the `person` user type ([module 4](/docs/beginner/users-and-user-types)), the default sign-in flow ([module 6](/docs/beginner/flows)) and the Administrator role ([module 8](/docs/intermediate/authorization)).
+2. Export your React app and your resource server with `POST $CP/export`. See how the client secret comes out.
+3. Change the app's name in the YAML and send it back with `POST $CP/import`.
+
+## Recap
+
+- Every resource can be YAML, so identity configuration can live in Git.
+- **Import** writes to the database. **Declarative files** are read-only. **Bootstrap** seeds the defaults.
+- **Export** writes `var:` and `sec:` references, so secrets stay on the server.
+
+Go deeper: [What is import and export](https://thunderid.dev/docs/next/guides/declarative-configurations/what-is-import-and-export), [Import resources](https://thunderid.dev/docs/next/guides/declarative-configurations/import-resources), [Value references](https://thunderid.dev/docs/next/guides/declarative-configurations/value-references), [Resource export](https://thunderid.dev/docs/next/guides/resource-export).

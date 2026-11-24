@@ -1,7 +1,22 @@
 ---
-title: "22. How work gets done"
-sidebar_label: "22. How work gets done"
+title: "25. How work gets done"
+sidebar_label: "25. How work gets done"
+description: "Feature issues, design discussions, specs and threat models, pull requests and SDK parity."
 ---
+
+:::note[🎯 What you'll learn]
+
+- The four stages every feature goes through
+- What a good pull request needs
+- How SDK changes stay in step across platforms
+
+:::
+
+## The idea
+
+ThunderID designs in the open. A feature is agreed as a problem first, then as a design, then as a written spec and threat model, and only then built.
+
+## The four stages
 
 A feature goes through four stages, each with its own artifact and review.
 
@@ -12,12 +27,19 @@ A feature goes through four stages, each with its own artifact and review.
 
 Bug fixes and small improvements skip stages 2 and 3, but still need an assigned issue.
 
-**PR checklist:**
+## PR checklist
 
 - Get the issue assigned first. Comment on it and post it in `#thunderid-dev` on the [LF Decentralized Trust Discord](https://discord.lfdecentralizedtrust.org/).
 - Sign off every commit (`git commit -s`). A DCO check fails without it.
 - Run `make pr_checks` before pushing.
 - Add docs under `docs/content/` for user-visible changes and run Vale (`make lint_docs`). Fill the breaking changes section of the PR template when one applies.
 - In an SDK repo, label the PR `parity/prs-raised` (with links to the ports in the other SDKs) or `parity/prs-not-needed`.
+
+
+## Recap
+
+- Problem first (issue), then design (discussion), then spec and threat model, then code.
+- Sign off every commit and run `make pr_checks` before pushing.
+- SDK pull requests need a parity label.
 
 Go deeper: [Propose a feature](https://thunderid.dev/community/contributing/propose-a-feature), [Propose a design](https://thunderid.dev/community/contributing/propose-a-design), [Pull request workflow](https://thunderid.dev/community/contributing/contributing-code/pull-request-workflow), [Cross-SDK feature parity](https://thunderid.dev/community/contributing/contributing-code/sdk-development/feature-parity).

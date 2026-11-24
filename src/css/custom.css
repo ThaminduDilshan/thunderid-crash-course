@@ -53,3 +53,215 @@
   display: block;
   overflow-x: auto;
 }
+
+/* ---------- Typography and reading layout ---------- */
+
+:root {
+  /* System fonts first, then colour emoji fonts so icons keep their width on every OS. */
+  --ifm-font-family-base: system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+  --ifm-line-height-base: 1.75;
+  --ifm-paragraph-margin-bottom: 1.15rem;
+  --ifm-list-item-margin: 0.45rem;
+  --ifm-heading-margin-bottom: 0.9rem;
+}
+
+.markdown {
+  font-size: 1.04rem;
+}
+
+.markdown > h2 {
+  margin-top: 2.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.markdown > h3 {
+  margin-top: 2rem;
+}
+
+/* Keep the text column readable on wide screens. */
+@media (min-width: 997px) {
+  .theme-doc-markdown {
+    max-width: 50rem;
+  }
+}
+
+/* Long inline commands wrap at sensible points instead of mid-word. */
+.markdown :not(pre) > code {
+  overflow-wrap: anywhere;
+}
+
+/* Admonition titles: no forced capitals, a little space after the icon. */
+.theme-admonition [class*='admonitionHeading'] {
+  text-transform: none;
+  font-size: 0.95rem;
+  letter-spacing: 0;
+}
+
+/* Navbar links and the site title stay on one line, and the title never shrinks. */
+.navbar__link,
+.navbar__title {
+  white-space: nowrap;
+}
+
+.navbar__brand {
+  flex-shrink: 0;
+}
+
+.navbar__item {
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+}
+
+.sidebar-divider {
+  margin: 0.75rem 0.75rem;
+  border: 0;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+/* ---------- Course progress (navbar) ---------- */
+
+.course-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.course-progress:hover {
+  text-decoration: none;
+}
+
+.course-progress__bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 9.5rem;
+  padding-right: 16px;
+}
+
+.course-progress--mobile .course-progress__bar {
+  width: 100%;
+}
+
+.course-progress__segment {
+  position: relative;
+  display: block;
+  height: 10px;
+  flex-basis: 0;
+  border-radius: 999px;
+  background: var(--ifm-color-emphasis-200);
+}
+
+.course-progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ifm-color-primary);
+  transition: width 0.3s ease;
+}
+
+.course-progress__milestone {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  line-height: 1;
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.course-progress__milestone.is-reached {
+  filter: none;
+  opacity: 1;
+}
+
+.course-progress__count {
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* ---------- Mark as complete ---------- */
+
+.mark-complete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 3rem 0 1rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+}
+
+.mark-complete--done {
+  border-color: var(--ifm-color-success);
+  background: rgba(0, 164, 0, 0.06);
+}
+
+.mark-complete__hint {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+/* ---------- Checkpoints ---------- */
+
+.checkpoint {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+}
+
+.checkpoint--done {
+  border-color: var(--ifm-color-success);
+}
+
+.checkpoint__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.checkpoint__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.35rem 0;
+  cursor: pointer;
+}
+
+.checkpoint__item input {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--ifm-color-primary);
+}
+
+.checkpoint__done {
+  margin: 0.75rem 0 0;
+  font-weight: 600;
+  color: var(--ifm-color-success-darkest);
+}
+
+[data-theme='dark'] .checkpoint__done {
+  color: var(--ifm-color-success-lightest);
+}
+
+/* Any remaining GFM task list: wrapped lines line up with the text, not the box. */
+.contains-task-list {
+  padding-left: 0;
+}
+
+.task-list-item {
+  list-style: none;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: baseline;
+}

@@ -1,0 +1,59 @@
+---
+title: "13. SDKs in depth"
+sidebar_label: "13. SDKs"
+description: "Which ThunderID SDK fits which app, redirect vs app-native mode, and the samples to learn from."
+---
+
+:::note[🎯 What you'll learn]
+
+- Which SDK to pick for a given app
+- How the same SDK does redirect and app-native sign-in
+- Where to find working samples
+
+:::
+
+## The idea
+
+You could write the OAuth redirects, PKCE, token storage, refresh and flow rendering by hand. The SDKs do it for you, and they're how ThunderID itself is built: Gate and the consoles run on `@thunderid/react`.
+
+## Pick your SDK
+
+| Platform | Repository | Packages |
+| --- | --- | --- |
+| JavaScript | [javascript-sdks](https://github.com/thunder-id/javascript-sdks) | Core `@thunderid/javascript`, runtimes `browser` and `node`, frameworks `react`, `vue`, `nextjs`, `nuxt`, `express`, routers `react-router` and `tanstack-router`, and a `better-auth` helper |
+| iOS | [ios-sdks](https://github.com/thunder-id/ios-sdks) | `ThunderID` (Swift) and `ThunderIDSwiftUI` components |
+| Android | [android-sdks](https://github.com/thunder-id/android-sdks) | `dev.thunderid.android` (Kotlin) and `dev.thunderid.compose` components |
+| Flutter | [flutter-sdks](https://github.com/thunder-id/flutter-sdks) | `thunderid_flutter`, a plugin over the native iOS and Android SDKs |
+
+Python, Go, Angular and React Native SDKs are listed as coming soon. Agent tooling (agent skills, Claude and Codex plugins) is in the same [SDKs and tools](https://thunderid.dev/docs/next/sdks-and-tools) catalogue.
+
+:::info[🧳 In Wayfinder]
+
+The Wayfinder web app is a React app on `@thunderid/react` in redirect mode. The B2B edition, Wayfinder Enterprise, is a Next.js app on `@thunderid/nextjs`, which signs people in from the server.
+
+:::
+
+## Two modes, one SDK
+
+The UI SDKs support both sign-in models from [module 11](/docs/intermediate/three-ways-to-sign-in). In React, the provider's props pick the mode:
+
+| Mode | `ThunderIDProvider` props | Example |
+| --- | --- | --- |
+| Redirect (ThunderID-hosted sign-in) | `clientId` + `baseUrl` | `samples/apps/react-sdk-sample` |
+| App-native (Flow Execution API) | `applicationId` + `baseUrl` | Gate itself, `samples/apps/react-api-based-sample` |
+
+`clientId` vs `applicationId` is the difference to remember. Components such as `<SignIn/>`, `<SignUp/>` and `<UserProfile/>` draw flow steps from the server's response, so a flow change shows up in the app without a release.
+
+A browser SPA signs in only through redirect mode. It still uses the Flow Execution API for sign-up and recovery, which have no redirect equivalent.
+
+## 🧪 Lab
+
+Pick a second SDK from the [SDKs and tools](https://thunderid.dev/docs/next/sdks-and-tools) catalogue (Next.js, Vue, Express or a mobile SDK) and run its quickstart against your data plane. Compare what the server-side SDKs keep in the browser with what the React SDK keeps.
+
+## Recap
+
+- One SDK repository per platform, with a quickstart and a playground in each.
+- `clientId` means redirect mode. `applicationId` means app-native mode.
+- SDK components draw whatever the flow asks for, so flows can change without app releases.
+
+Go deeper: [SDKs and tools](https://thunderid.dev/docs/next/sdks-and-tools), [samples repository](https://github.com/thunder-id/samples).

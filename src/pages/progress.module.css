@@ -1,0 +1,77 @@
+.lead {
+  color: var(--ifm-color-emphasis-700);
+  max-width: 44rem;
+}
+
+.overall {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--ifm-color-emphasis-200);
+  overflow: hidden;
+  margin: 1rem 0 2.5rem;
+  max-width: 44rem;
+}
+
+.overall span {
+  display: block;
+  height: 100%;
+  background: var(--ifm-color-primary);
+  transition: width 0.3s ease;
+}
+
+.tracks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1.25rem;
+}
+
+.track {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.reached {
+  border-color: var(--ifm-color-success);
+}
+
+.trackHeader {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.trackIcon {
+  font-size: 1.8rem;
+}
+
+.trackTitle {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.trackMeta {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.modules {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modules li {
+  margin: 0.35rem 0;
+}
+
+.module {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+
+.checkpointLink {
+  font-weight: 600;
+}

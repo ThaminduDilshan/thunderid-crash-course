@@ -1,0 +1,97 @@
+---
+title: "4. Users and user types"
+sidebar_label: "4. Users and user types"
+description: "Entities, user types and their schemas, credentials, and groups."
+---
+
+:::note[🎯 What you'll learn]
+
+- What an **entity** is, and why users, agents and apps share one model
+- How a **user type** defines what a user record looks like
+- How passwords and other credentials are stored
+- What groups are for
+
+:::
+
+## The idea
+
+Before anyone can sign in, ThunderID needs to know what a "user" looks like in your product. A shop might need a shipping address. A hospital might need a staff number. Instead of a fixed users table, ThunderID lets you define that shape yourself.
+
+That shape is a **user type**: a schema, like a template. Every user belongs to exactly one user type and holds the attributes it defines.
+
+:::info[🧳 In Wayfinder]
+
+Wayfinder has two kinds of people, so it has two user types:
+
+| User type | Attributes | How users arrive |
+| --- | --- | --- |
+| `Customer` | `username`, `email`, `password`, `given_name`, `family_name` | They sign themselves up |
+| `Staff` | `username`, `email`, `password`, `displayName` | An admin invites them |
+
+Keeping them separate means customer access and staff access can never get mixed up later.
+
+:::
+
+## Entities: one model for everyone
+
+ThunderID stores every principal as an **entity**, with a category:
+
+| Category | What it is | Its type |
+| --- | --- | --- |
+| `user` | A person | A user type (Ex: the bootstrap `person`) |
+| `agent` | An AI agent or other autonomous software ([module 7](/docs/beginner/agents)) | An agent type (Ex: the bootstrap `default`) |
+| `app` | An application ([module 5](/docs/beginner/applications)) | None. Apps have no schema. |
+
+Because they share one model, users, agents and apps can all join groups, hold roles and authenticate in similar ways.
+
+## What a user type defines
+
+A user type (or agent type) is a list of attributes, each with a type and some rules.
+
+- **Attribute types:** `string`, `email` <V2 />, `mobile` <V2 />, `number`, `boolean`, `object`, `array`.
+- **Rules on an attribute:**
+  - `required`: every user must have it.
+  - `unique`: no two users may share the value.
+  - `enum`: only listed values are allowed.
+  - `regex`: the value must match a pattern. This is also how you set password rules.
+  - `credential`: the value is a secret, such as a password. It's hashed, stored apart from the profile, and never returned by the API.
+- **Display and contact:** a type can name the attribute used as the display name, and the primary email and mobile used for notifications.
+- **Ownership:** each type belongs to an organization unit ([module 12](/docs/intermediate/organization-units)).
+
+The bootstrap `person` type has `username` and `email` (both required and unique) and a `password` marked as a credential.
+
+:::warning[Gotcha: unique means deployment-wide]
+
+`unique` is checked across the whole deployment by attribute name and value. It's not limited to one user type or one organization unit. Two user types that both have a unique `email` can't hold the same address.
+
+:::
+
+## Groups
+
+A **group** collects members so you can manage them together, such as giving a whole team a role at once. Members can be users, agents, apps or other groups. Members must belong to the group's organization unit or be shared into it ([module 12](/docs/intermediate/organization-units)).
+
+## 🧪 Lab
+
+1. In the Control Plane Console, open **User types** and create a `partner` type with `username`, `email` and a `password` marked as a credential.
+2. Create a user of that type.
+3. Read it back through the API. The password isn't in the response:
+
+```bash
+curl -sk "$CP/users/<user-id>" -H "Authorization: Bearer $TOKEN" | jq
+```
+
+4. Create a group and add the user to it.
+
+:::info[🧭 Wayfinder step]
+
+Do [Model your users](https://thunderid.dev/docs/next/use-cases/b2c/build-users): create Wayfinder's `Customer` and `Staff` user types, and a first customer to sign in with.
+
+:::
+
+## Recap
+
+- Users, agents and apps are all **entities**.
+- A **user type** is the schema for one kind of person. A `credential` attribute is hashed and never returned.
+- **Groups** collect members so you can manage them together.
+
+Go deeper: [User types](https://thunderid.dev/docs/next/guides/users/user-types), [Manage users](https://thunderid.dev/docs/next/guides/users/manage-users), [Manage groups](https://thunderid.dev/docs/next/guides/users/manage-groups).

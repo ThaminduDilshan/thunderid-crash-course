@@ -1,38 +1,77 @@
 ---
-title: "3. Lab 0: run ThunderID and tour the consoles"
-sidebar_label: "3. Lab 0: run ThunderID and tour the consoles"
+title: "3. Lab 0: run ThunderID"
+sidebar_label: "3. Lab 0: run ThunderID"
+description: "Get ThunderID running locally, find your way around the consoles, and get a token for the API labs."
 ---
 
-:::tip[🧭 Wayfinder step]
+:::note[🎯 What you'll do]
 
-[Set up your environment](https://thunderid.dev/docs/next/use-cases/b2c/build-environment). On 2.0, wherever a docs page says to use the Console at `:8090` for applications, flows or import, use the Control Plane Console at `:8095`. The Console at `:8090` is the Admin Console there.
+- Run ThunderID on your laptop
+- Sign in to both consoles and see a change travel from one plane to the other
+- Get a token, so the later labs can call the management API
 
 :::
 
-The quickstart pack runs three deployments already wired together.
+## What you're about to run
 
-| Deployment | Port | Role |
+The **quickstart pack** runs three ThunderID deployments that are already wired together. You met the two planes in [module 2](/docs/beginner/what-thunderid-is). The third one exists only to sign operators into the control plane.
+
+| Deployment | URL | Role |
 | --- | --- | --- |
-| `dp` | 8090 | The managed data plane. Gate and the Admin Console live here. |
-| `cp` | 8095 | The control plane and its console. Writes here are applied to `dp` automatically. |
-| `auth-dp` | 8091 | A second data plane whose only job is signing operators into the Control Plane Console. |
+| `dp` | [https://localhost:8090](https://localhost:8090) | The data plane. Gate and the Admin Console live here. |
+| `cp` | [https://localhost:8095](https://localhost:8095) | The control plane and its console. Changes here are applied to `dp` automatically. |
+| `auth-dp` | [https://localhost:8091](https://localhost:8091) | A second data plane whose only job is signing operators into the Control Plane Console. |
 
-**Option A, the release pack (anyone):**
+## Step 1: install and start
+
+Pick one option.
+
+**Option A: the release pack** (anyone)
 
 1. Download `thunderid-2.0.0-m1-<os>-<arch>.zip` from the [v2.0.0-m1 release](https://github.com/thunder-id/thunderid/releases/tag/v2.0.0-m1). The `thunderid-gateway-*` zip is a lone data plane, not the quickstart.
-2. Unzip it and run `./setup.sh` once. It generates TLS, signing and encryption keys and asks for two passwords: `admin` (Control Plane Console) and `servicedeskadmin` (Admin Console).
+2. Unzip it and run `./setup.sh` once. It generates this deployment's TLS, signing and encryption keys, and asks for two passwords: `admin` (Control Plane Console) and `servicedeskadmin` (Admin Console).
 3. Run `./start.sh`.
 
-**Option B, from source (contributors):** clone [thunder-id/thunderid](https://github.com/thunder-id/thunderid) and run `make run`. Both accounts default to `admin` / `admin`, and the consoles run on dev servers. See [module 21](/docs/contributor/development-setup).
+**Option B: from source** (contributors)
 
-**Tour:**
+Clone [thunder-id/thunderid](https://github.com/thunder-id/thunderid) and run `make run`. Both accounts default to `admin` / `admin`, and the consoles run on dev servers. [Module 24](/docs/contributor/development-setup) explains the dev setup.
 
-1. Open the Control Plane Console (`https://localhost:8095/console`, or `:5193` from source). It redirects you to `auth-dp` to sign in. Look at Applications, Flows, Users, Roles.
-2. Open the Admin Console (`https://localhost:8090/console`, or `:5192` from source) and sign in as the Service Desk Admin on the data plane's Gate.
-3. Fetch the data plane's discovery document and keys: `curl -sk https://localhost:8090/.well-known/openid-configuration | jq` and `curl -sk https://localhost:8090/oauth2/jwks | jq`. Skim `grant_types_supported`.
-4. In the Control Plane Console, create a user. Then find it in the Admin Console. That round trip is the control plane applying a configuration version to the data plane.
+:::warning[Self-signed certificate]
 
-**Set up for the later labs:** the management API needs a token with the `system` permission. The quickest way to get one is from a console you're signed in to. Open the browser's DevTools, Network tab, pick any API call and copy the bearer token from its `Authorization` header. Tokens expire, so repeat this when calls start returning `401`.
+The local servers use a self-signed TLS certificate, so your browser warns the first time you open each one. Accept the warning for `localhost`. In `curl`, pass `-k`.
+
+:::
+
+## Step 2: tour the consoles
+
+1. Open the Control Plane Console: [https://localhost:8095/console](https://localhost:8095/console), or [https://localhost:5193/console](https://localhost:5193/console) from source. It sends you to `auth-dp` to sign in as `admin`. Look around: Applications, Flows, Users, Roles.
+2. Open the Admin Console: [https://localhost:8090/console](https://localhost:8090/console), or [https://localhost:5192/console](https://localhost:5192/console) from source. Sign in as the Service Desk Admin on the data plane's own Gate.
+3. In the Control Plane Console, create a user. A couple of seconds later, find the same user in the Admin Console. That round trip is the control plane applying a new configuration version to the data plane.
+
+:::tip[On 1.x]
+
+The 1.x releases have no control plane. A data plane there serves one full Console at `/console` that manages everything. On 2.0, every data plane pack ships only the Admin Console, and applications, connections and flows are authored on the control plane or through the data plane's API and YAML.
+
+:::
+
+## Step 3: peek at the public endpoints
+
+Every OAuth 2.0 and OIDC server publishes what it supports. Open [the discovery document](https://localhost:8090/.well-known/openid-configuration) and [the signing keys](https://localhost:8090/oauth2/jwks) in your browser, or ask from the terminal:
+
+```bash
+curl -sk https://localhost:8090/.well-known/openid-configuration | jq
+curl -sk https://localhost:8090/oauth2/jwks | jq
+```
+
+Skim `grant_types_supported` in the first response. The second one holds the public keys anyone can use to check a ThunderID token's signature.
+
+## Step 4: get a token for the API labs
+
+Later labs call the management API, which needs a token with the `system` permission. The quickest way to get one is from a console you're already signed in to:
+
+1. Open your browser's DevTools and go to the **Network** tab.
+2. Click around the Control Plane Console so it makes an API call.
+3. Pick any call and copy the bearer token from its `Authorization` header.
 
 ```bash
 export CP=https://localhost:8095   # where configuration is authored
@@ -40,8 +79,20 @@ export DP=https://localhost:8090   # where sign-in runs
 export TOKEN=<token from the Control Plane Console>
 ```
 
-On a lone data plane, `CP` and `DP` are both `https://localhost:8090` and the token comes from its console. The labs pass `-k` to `curl` because the local certificate is self-signed.
+Tokens expire. When calls start returning `401`, copy a fresh one. On a lone data plane, `CP` and `DP` are both [`https://localhost:8090`](https://localhost:8090), and the token comes from its own console.
 
-On 1.x a data plane serves the full Console at `/console`, which manages everything. On 2.0 every data plane pack ships only the Admin Console. Applications, connections and flows are authored on a control plane, or through the data plane's REST API and YAML.
+:::info[🧭 Wayfinder step]
 
-Go deeper: [Get ThunderID](https://thunderid.dev/docs/next/getting-started/get-thunderid), [quickstart README](https://github.com/thunder-id/thunderid/blob/main/quickstart/README.md).
+Do [Set up your environment](https://thunderid.dev/docs/next/use-cases/b2c/build-environment) now. It downloads the Wayfinder sample you'll build out over the next tracks.
+
+The docs pages were written for a single full Console. On 2.0, whenever a docs page says to use the Console at `:8090` for applications, flows or import, use the Control Plane Console at `:8095` instead.
+
+:::
+
+## Recap
+
+- The quickstart pack runs a data plane (`:8090`), a control plane (`:8095`) and `auth-dp` (`:8091`).
+- Author on the control plane. Watch changes land on the data plane.
+- `$TOKEN`, `$CP` and `$DP` are set for every lab that follows.
+
+Go deeper: [Get ThunderID](https://thunderid.dev/docs/next/getting-started/get-thunderid), [Quickstart pack README](https://github.com/thunder-id/thunderid/blob/main/quickstart/README.md).

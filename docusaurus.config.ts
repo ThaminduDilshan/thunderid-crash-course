@@ -18,6 +18,8 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
+  plugins: ['./src/plugins/course-outline.ts'],
+
   markdown: {
     mermaid: true,
     hooks: {
@@ -69,12 +71,14 @@ const config: Config = {
       },
     },
     navbar: {
-      title: '⚡ ThunderID Crash Course',
+      title: '⚡\u2002ThunderID Crash Course',
       items: [
-        {type: 'docSidebar', sidebarId: 'course', position: 'left', label: 'Course'},
-        {to: '/docs/beginner/lab-0', label: 'Lab 0', position: 'left'},
-        {to: '/docs/glossary', label: 'Glossary', position: 'left'},
-        {href: 'https://thunderid.dev/docs/next/', label: 'ThunderID Docs', position: 'right'},
+        {type: 'docSidebar', sidebarId: 'course', position: 'left', label: 'Start here'},
+        {type: 'docSidebar', sidebarId: 'beginner', position: 'left', label: 'Beginner'},
+        {type: 'docSidebar', sidebarId: 'intermediate', position: 'left', label: 'Intermediate'},
+        {type: 'docSidebar', sidebarId: 'advanced', position: 'left', label: 'Advanced'},
+        {type: 'docSidebar', sidebarId: 'contributor', position: 'left', label: 'Contributor'},
+        {type: 'custom-courseProgress', position: 'right'},
         {href: repo, label: 'GitHub', position: 'right'},
       ],
     },

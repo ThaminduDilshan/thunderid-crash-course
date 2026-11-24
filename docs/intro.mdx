@@ -1,11 +1,12 @@
 ---
 title: "Welcome"
-sidebar_label: "👋 Welcome"
+sidebar_label: "👋 Welcome"
 sidebar_position: 0
 slug: /intro
+description: "How the ThunderID Crash Course works: four tracks, one storyline, and labs in almost every module."
 ---
 
-Learn ThunderID by running it. 22 short modules take you from "what's an access token?" to stepping through the flow engine in a debugger, with something hands-on in almost every one.
+Learn ThunderID by running it. 25 short modules take you from "what's an access token?" to stepping through the flow engine in a debugger, with something hands-on in almost every one.
 
 :::note[A community course]
 
@@ -13,36 +14,45 @@ This course is written by a ThunderID contributor. It isn't the official documen
 
 :::
 
-## 🗺️ How this course works
+## 🗺️ How this course works
 
-| Level | For | You'll be able to |
+| Track | For | You'll be able to |
 | --- | --- | --- |
-| [🌱 Beginner](/docs/beginner) | Everyone | Explain how ThunderID models organizations, identities, access and user journeys, and run it locally |
-| [🛠️ Intermediate](/docs/intermediate) | Everyone | Register apps and agents, sign people in three different ways, and wire in identity providers and SDKs |
-| [🚀 Advanced](/docs/advanced) | App builders and operators | Use the advanced protocols, verifiable credentials, GitOps-style configuration and the control plane |
-| [🧑‍💻 Contributor track](/docs/contributor) | Anyone changing ThunderID itself | Find your way around the code, run and debug it from source, and get a PR merged |
+| [🌱 Beginner](/docs/beginner) | Everyone, including people new to IAM | Explain the basics, run ThunderID, and sign a user in to your own app |
+| [🛠️ Intermediate](/docs/intermediate) | Everyone | Build a real app's identity: access rules, journeys, social sign-in, organizations and agents acting for users |
+| [🚀 Advanced](/docs/advanced) | App builders and operators | Serve business customers, use the full protocol set, issue credentials and run ThunderID as code |
+| [🧑‍💻 Contributor track](/docs/contributor) | Anyone changing ThunderID itself | Find your way around the code, run and debug it from source, and get a PR merged |
 
 Everyone takes Beginner and Intermediate. Then pick Advanced, the Contributor track, or both.
 
 ```mermaid
 flowchart LR
-  B["🌱 Beginner<br/>1 to 7: the concepts"] --> I["🛠️ Intermediate<br/>8 to 12: build"]
-  I --> A["🚀 Advanced<br/>13 to 17: operate and extend"]
-  I --> C["🧑‍💻 Contributor track<br/>18 to 22: change the code"]
+  B["🌱 Beginner<br/>modules 1 to 7"] --> I["🛠️ Intermediate<br/>modules 8 to 14"]
+  I --> A["🚀 Advanced<br/>modules 15 to 20"]
+  I --> C["🧑‍💻 Contributor track<br/>modules 21 to 25"]
 ```
 
-## 🧭 One storyline
+## 🧭 One storyline
 
-You build the identity layer of **Wayfinder**, a sample travel app, as you go. The labs follow the docs' [Wayfinder Build It tutorial](https://thunderid.dev/docs/next/use-cases/b2c/build-index), so each module adds one visible piece: users, access rules, sign-in journeys, the app itself.
+You'll build the identity layer of **Wayfinder**, a sample travel booking app.
+
+- In **Beginner**, you get a quick win: your own React app signing people in, and Wayfinder's user model.
+- In **Intermediate**, you build Wayfinder for real by following the docs' [Wayfinder Build It tutorial](https://thunderid.dev/docs/next/use-cases/b2c/build-index): access rules, journeys, the app, and an AI concierge that acts for travelers.
+- In **Advanced**, Wayfinder sells to companies as **Wayfinder Enterprise**, and issues verifiable credentials.
 
 As you read, look for these markers:
 
-- 🧭 **Wayfinder step:** a page of the Build It tutorial to do next.
-- 🧪 **Lab:** an extra hands-on exercise (`curl`, console, code) the docs don't cover.
-- ✅ **Checkpoint:** what you should be able to do before moving on, at the end of each level.
+- 🧳 **In Wayfinder:** the concept, shown in the storyline.
+- 🧭 **Wayfinder step:** a page of the Build It tutorial to do next.
+- 🧪 **Lab:** a hands-on exercise (`curl`, console, code) of this course's own.
+- ✅ **Checkpoint:** what you should be able to do before moving on, at the end of each track.
 - <V2 /> marks what exists only on `main` (the 2.0 line, `v2.0.0-m1`), not in the 1.x releases.
 
-## 🧰 What you need
+## 📈 Track your progress
+
+Every module ends with a **Mark as complete** button, and each checkpoint has boxes to tick. The bar at the top of the page shows how far you've got, with a milestone for each finished track. Progress is saved in this browser only: a different browser or a private window starts fresh. See [My progress](/progress) for the full list.
+
+## 🧰 What you need
 
 - Git, Node.js LTS, `curl` and `jq` for the labs.
 - Go and pnpm too, for the Contributor track.

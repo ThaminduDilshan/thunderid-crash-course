@@ -8,10 +8,10 @@ A hands-on crash course for [ThunderID](https://github.com/thunder-id/thunderid)
 
 | Track | Modules | For |
 | --- | --- | --- |
-| 🌱 Beginner | 1 to 7: IAM basics, organization units, entities, authorization, flows | Everyone |
-| 🛠️ Intermediate | 8 to 12: applications, three ways to sign in, connections, agents, SDKs | Everyone |
-| 🚀 Advanced | 13 to 17: protocols, verifiable credentials, declarative config, control plane | App builders and operators |
-| 🧑‍💻 Contributor track | 18 to 22: architecture, providers, flow engine, dev setup, how work gets done | Anyone changing ThunderID |
+| 🌱 Beginner | 1 to 7: IAM basics, run ThunderID, users, applications, flows, agents | Everyone |
+| 🛠️ Intermediate | 8 to 14: authorization, journeys, connections, three ways to sign in, organization units, SDKs, MCP | Everyone |
+| 🚀 Advanced | 15 to 20: B2B, OAuth and OIDC, verifiable credentials, declarative config, control plane | App builders and operators |
+| 🧑‍💻 Contributor track | 21 to 25: architecture, providers, flow engine, dev setup, how work gets done | Anyone changing ThunderID |
 
 The course targets ThunderID 2.0 (`main`). Features that don't exist in the 1.x releases are marked **2.0**.
 
@@ -27,7 +27,9 @@ The site opens at http://localhost:3000. `npm run build` produces the static sit
 ## Project layout
 
 - `docs/intro.mdx`: the welcome page
-- `docs/<track>/`: one folder per track, one page per module, and a checkpoint page at the end. `_category_.json` sets each track's label, order and index page.
+- `docs/<track>/`: one folder per track, one page per module, and a checkpoint page at the end. `sidebars.ts` gives each track its own sidebar.
+- `src/data/`: the tracks and the checkpoint items
+- `src/progress/`, `src/components/`: the progress bar, the checkpoints and the "Mark as complete" button. Progress is kept in the browser's `localStorage`.
 - `docs/glossary.mdx`, `docs/whats-next.mdx`
 - `src/pages/index.tsx`: the landing page
 - `src/components/V2.tsx`: the **2.0** badge, available in every page as `<V2 />`

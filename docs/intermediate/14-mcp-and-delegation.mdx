@@ -1,0 +1,63 @@
+---
+title: "14. MCP and agents that act for users"
+sidebar_label: "14. MCP and delegation"
+description: "Securing MCP servers and clients, and the agent patterns where an agent acts on a user's behalf."
+---
+
+:::note[🎯 What you'll learn]
+
+- How ThunderID protects MCP servers and registers MCP clients
+- How an agent acts on behalf of a user, and how the token records it
+- How one agent calls another
+
+You met agents and their own tokens in [module 7](/docs/beginner/agents).
+
+:::
+
+## The idea
+
+The [Model Context Protocol](https://modelcontextprotocol.io) (MCP) lets AI agents call tools on MCP servers. An MCP server is an API like any other, so it needs the same thing as your booking API: tokens that say who's calling and what they may do. MCP's authorization spec uses OAuth 2.0, which means ThunderID can be the authorization server for your MCP servers and the clients that call them.
+
+Once an agent works for a person, a second question appears: is the agent acting for itself, or for that person? The token has to say which.
+
+:::info[🧳 In Wayfinder]
+
+Wayfinder exposes its bookings as an MCP server at `http://localhost:8787/mcp`, with tools such as `recommend_bookings`.
+
+- **Acting on its own:** the concierge agent gets its own token with `booking:recommend` and calls `recommend_bookings`.
+- **Acting for a user:** a traveler signs in and lets the concierge work for them. The concierge's token now names the traveler as `sub` and the concierge in the `act` claim, so the booking API can tell exactly who did what.
+
+:::
+
+## Protecting MCP servers and registering clients
+
+- **Protect an MCP server:** register it as a resource server whose identifier is its URL, add a permission per tool, and grant those permissions through roles. The server validates tokens offline against `/oauth2/jwks`.
+- **Register MCP clients:** manually (app type `mcp`), through Dynamic Client Registration (RFC 7591, enabled with `oauth.dcr.enabled`), or from a Client ID Metadata Document <V2 />.
+
+ThunderID also runs an MCP server of its own at `/mcp`, so an AI coding assistant can manage ThunderID ([module 20](/docs/advanced/also-in-the-box)).
+
+## Agents acting for users
+
+| Pattern | How | What the token says |
+| --- | --- | --- |
+| Agent sign-in | The agent completes a sign-in flow (password, OTP, magic link, passkey). The app must list its agent type in `allowedAgentTypes`. | `sub` is the agent |
+| **On behalf of a user** | The user signs in and consents. The agent gets a token through authorization code, CIBA, device code or token exchange. | `sub` is the user, `act` is the agent |
+| **Agent to agent** | Token exchange with an `actor_token` | Nested `act` claims record the whole chain |
+
+## 🧪 Lab
+
+Run the [AI agents sample](https://thunderid.dev/docs/next/use-cases/ai-agents/try-it-out). Its three walkthroughs cover protecting the agent, the agent acting on its own, and the agent acting for a user. Decode the token in each and compare `sub` and `act`.
+
+:::info[🧭 Wayfinder step]
+
+Start with [Set up the agent sample](https://thunderid.dev/docs/next/use-cases/ai-agents/try-it-out/setup), then the three walkthroughs it links.
+
+:::
+
+## Recap
+
+- An MCP server is a **resource server**. MCP clients are **applications**.
+- When an agent acts for a user, `sub` is the user and `act` is the agent.
+- Agent-to-agent calls chain through token exchange, and nested `act` claims keep the history.
+
+Go deeper: [MCP](https://thunderid.dev/docs/next/guides/mcp/overview), [Agent authentication](https://thunderid.dev/docs/next/guides/agents/authentication), [Securing MCP use case](https://thunderid.dev/docs/next/use-cases/ai-agents/mcp-authorization/overview).
