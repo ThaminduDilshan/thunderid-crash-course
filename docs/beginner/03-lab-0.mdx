@@ -26,7 +26,7 @@ The **quickstart pack** runs three ThunderID deployments that are already wired 
 
 This course is built and tested against `main`. The milestone releases trail `main` by hundreds of commits, and several labs fail on them, so build the quickstart pack from source.
 
-You need Git, Go, Node.js LTS and pnpm. The [contributing guide](https://github.com/thunder-id/thunderid/blob/main/CONTRIBUTING.md) lists the exact versions.
+You need Git, Go, Node.js LTS and pnpm. The [Prerequisites](https://thunderid.dev/community/contributing/contributing-code/prerequisites) page lists the exact versions.
 
 1. Clone [thunder-id/thunderid](https://github.com/thunder-id/thunderid) and build the pack:
 
@@ -49,10 +49,10 @@ The local servers use a self-signed TLS certificate, so your browser warns the f
 ## Step 2: tour the consoles
 
 1. Open the Control Plane Console: [https://localhost:8095/console](https://localhost:8095/console). It sends you to `auth-dp` to sign in as `admin`.
-2. The console opens in the `Default` project ([module 2](/docs/next/beginner/what-thunderid-is#how-configuration-is-organized)). The sidebar shows what's created inside a project: Applications, Agents, Resource servers, Roles, Flows and Groups under **Build**, and Users and Organization units under **Identities**.
-3. Clear the project selection with the ✕ on the **Project** selector in the header. This is the organization-wide view: Projects, Deployment, and the settings **shared by all projects**, such as User types and Connections. Pick `Default` in the selector to go back.
+2. The console opens in the `Default` project ([module 2](/docs/next/beginner/what-thunderid-is#how-configuration-is-organized)). The sidebar shows what's created inside a project: Applications, Agents, Resource servers, Intents, Roles, Flows and Verifiable credentials under **Build**, Users, Groups and Organization units under **Identities**, and Design and Notifications under **Customize**. Later modules cover each.
+3. Clear the project selection with the ✕ on the **Project** selector in the header. This is the organization-wide view: Projects, Deployment, and the settings **shared by all projects**, such as User types and Connections. Pick `Default` in the selector to go back. On a narrow window the header hides the selector, so widen it.
 4. Open the Admin Console: [https://localhost:8090/console](https://localhost:8090/console). Sign in as `servicedeskadmin` on the data plane's own Gate.
-5. Back in the Control Plane Console, open the `Default` project, then **Users**, and add a user. Pick the bootstrap `Person` user type and the `Default` organization unit. [Module 4](/docs/next/beginner/users-and-user-types) explains user types.
+5. Back in the Control Plane Console, open the `Default` project, then **Users**, and add a user. With one user type and one organization unit, the form uses the bootstrap `Person` type and `Default` without asking. [Module 4](/docs/next/beginner/users-and-user-types) explains user types.
 6. A couple of seconds later, find the same user in the Admin Console. That round trip is the control plane applying a new configuration version to the data plane.
 
 A data plane pack ships only the Admin Console. Applications, connections and flows are authored on the control plane, or through a data plane's API and YAML.

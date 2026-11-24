@@ -46,15 +46,21 @@ There are four patterns. This module covers the first. [Module 14](/docs/next/in
 
 ## 🧪 Lab
 
-1. Create an agent with an OAuth client:
+1. Find the `Default` project's ID. An agent created on the control plane without one lands outside any project, so the project's Agents page doesn't list it:
+
+```bash
+curl -sk $CP/projects -H "Authorization: Bearer $TOKEN" | jq
+```
+
+2. Create an agent with an OAuth client in that project:
 
 ```bash
 curl -sk -X POST "$CP/agents" -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"type":"default","attributes":{"name":"Sync Bot"},"inboundAuthConfig":[{"type":"oauth2","config":{"tokenEndpointAuthMethod":"client_secret_basic"}}]}'
+  -d '{"type":"default","projectId":"<project-id>","attributes":{"name":"Sync Bot"},"inboundAuthConfig":[{"type":"oauth2","config":{"tokenEndpointAuthMethod":"client_secret_basic"}}]}'
 ```
 
-2. Note the client ID and secret in the response. The secret is shown once.
-3. Get the agent's own token from the data plane, then decode it and find `sub_type`:
+3. Note the client ID and secret in the response. The secret is shown once.
+4. Get the agent's own token from the data plane, then decode it and find `sub_type`:
 
 ```bash
 curl -sk -u '<client-id>:<client-secret>' -d grant_type=client_credentials $DP/oauth2/token | jq
