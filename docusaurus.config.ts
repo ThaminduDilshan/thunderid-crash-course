@@ -83,7 +83,6 @@ const config: Config = {
         {type: 'docSidebar', sidebarId: 'advanced', position: 'left', label: 'Advanced'},
         {type: 'docSidebar', sidebarId: 'contributor', position: 'left', label: 'Contributor'},
         {type: 'custom-courseProgress', position: 'right'},
-        {href: repo, label: 'GitHub', position: 'right'},
       ],
     },
     footer: {

@@ -102,35 +102,40 @@
 /* ---------- Course progress (navbar) ---------- */
 
 .course-progress {
+  position: relative;
+}
+
+.course-progress__pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 999px;
+  color: var(--ifm-navbar-link-color);
+  font-size: 0.85rem;
   text-decoration: none;
 }
 
-.course-progress:hover {
+.course-progress__pill:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-navbar-link-color);
   text-decoration: none;
+}
+
+/* In the mobile drawer, line the pill's border up with the other menu items' text. */
+.menu__link.course-progress__pill {
+  width: fit-content;
+  margin: 0.4rem var(--ifm-menu-link-padding-horizontal);
 }
 
 .course-progress__bar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  width: 9.5rem;
-  padding-right: 16px;
-}
-
-.course-progress--mobile .course-progress__bar {
-  width: 100%;
-}
-
-.course-progress__segment {
-  position: relative;
   display: block;
-  height: 10px;
-  flex-basis: 0;
+  width: 3rem;
+  height: 6px;
   border-radius: 999px;
   background: var(--ifm-color-emphasis-200);
+  overflow: hidden;
 }
 
 .course-progress__fill {
@@ -141,15 +146,61 @@
   transition: width 0.3s ease;
 }
 
-.course-progress__milestone {
+.course-progress__count {
+  font-variant-numeric: tabular-nums;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* The panel opens on hover or keyboard focus. Its top padding bridges the gap below the pill, so
+   moving the pointer down to it doesn't close it. */
+.course-progress__panel {
   position: absolute;
-  right: -14px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.8rem;
-  line-height: 1;
+  top: 100%;
+  right: 0;
+  z-index: var(--ifm-z-index-dropdown);
+  width: 19rem;
+  padding-top: 0.4rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease, visibility 0.15s;
+}
+
+.course-progress:hover .course-progress__panel,
+.course-progress:focus-within .course-progress__panel {
+  visibility: visible;
+  opacity: 1;
+}
+
+.course-progress__card {
+  overflow: hidden;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  background: var(--ifm-dropdown-background-color);
+  box-shadow: var(--ifm-global-shadow-md);
+  font-size: 0.85rem;
+}
+
+.course-progress__tracks {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  list-style: none;
+}
+
+.course-progress__track {
+  display: contents;
+}
+
+.course-progress__track-name {
+  color: var(--ifm-font-color-base);
+}
+
+.course-progress__milestone {
   filter: grayscale(1);
-  opacity: 0.6;
+  opacity: 0.4;
 }
 
 .course-progress__milestone.is-reached {
@@ -157,10 +208,10 @@
   opacity: 1;
 }
 
-.course-progress__count {
-  font-size: 0.85rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--ifm-color-emphasis-700);
+.course-progress__open {
+  display: block;
+  padding: 0.6rem 0.9rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
 }
 
 /* ---------- Mark as complete ---------- */
