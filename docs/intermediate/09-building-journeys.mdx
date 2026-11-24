@@ -46,9 +46,9 @@ Wayfinder builds four journeys on top of the bundled sign-in:
 
 ## How an application gets its flows
 
-An application points at flows by ID: `authFlowId`, `registrationFlowId`, `recoveryFlowId`, `signOutFlowId` and `deviceGrantFlowId`. Registration and recovery also have an on/off switch.
+An application points at flows by ID: `authFlowId`, `registrationFlowId`, `recoveryFlowId`, `signOutFlowId` and `deviceGrantFlowId`. Registration and recovery also have an on/off switch. The console wizard leaves self sign-up off unless you turn it on, and sign-up on such an app fails with `FES-1006`.
 
-Leave an ID empty and ThunderID fills it in: first from the organization unit's flow for that type, then from the server default (Ex: `default-flow` for sign-in). If the flow an app points at is deleted, sign-in falls back to the default.
+Leave an ID empty and ThunderID fills it in: first from the organization unit's flow for that type, then from the server default (Ex: `default-flow` for sign-in). If the sign-in flow an app points at is deleted, sign-in falls back to the default. Other flow types don't fall back.
 
 ## All the node types
 
@@ -69,12 +69,13 @@ An executor is one unit of work. Here are the ones you'll reach for most:
 | Authentication | `CredentialsAuthExecutor`, `PasskeyAuthExecutor`, `MagicLinkExecutor`, `IdentifyingExecutor`, `AuthAssertExecutor` |
 | Federation | `GoogleOIDCAuthExecutor`, `GithubOAuthExecutor`, `OIDCAuthExecutor`, `OAuthExecutor`, `OpenID4VPVerifyExecutor` |
 | One-time codes and messages | `OTPExecutor`, `EmailExecutor`, `SMSExecutor` |
-| Creating and updating users | `ProvisioningExecutor`, `AttributeCollector`, `CredentialSetter`, `UserTypeResolver`, `OUExecutor` |
+| Creating and updating users | `ProvisioningExecutor`, `AttributeCollector`, `CredentialSetter`, `UserTypeResolver` |
+| Organization units | `OUExecutor` (creates an OU), `OUResolverExecutor` (resolves the OU at sign-in) |
 | Authorization and consent | `AuthorizationExecutor`, `PermissionValidator`, `ConsentExecutor` |
 | Sessions | `SSOCheckExecutor`, `SessionExecutor`, `SessionSignOutExecutor` |
 | Integration | `HTTPRequestExecutor`, `ExtensionExecutor` (calls an HTTP connection) |
 
-Some executors only work in some flow types. Ex: the session executors only in `AUTHENTICATION`.
+Some executors only work in some flow types. Ex: `SessionExecutor` and `SSOCheckExecutor` only in `AUTHENTICATION`, and `SessionSignOutExecutor` only in `SIGNOUT`.
 
 Flows are versioned: `GET /flows/{id}/versions` lists them, and `POST /flows/{id}/restore` rolls back.
 

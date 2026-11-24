@@ -37,7 +37,7 @@ Every customer gets the `Traveler` role, so a customer's access token carries `s
 | --- | --- | --- |
 | **Resource server** | An API you protect. Its `identifier` becomes the token's `aud`. | The booking API |
 | **Resource** | A noun the API deals with. Resources can nest. | `booking` |
-| **Action** | A verb on a resource. Each action becomes a permission: the resource's permission, a delimiter (default `:`), then the action's handle. | `read`, `create`, `cancel` |
+| **Action** | A verb on a resource. Each action becomes a permission: the resource's permission, a delimiter (default `:`), then the action's handle. An action directly on the resource server is just its handle. | `read`, `create`, `cancel` |
 | **Role** | A set of permissions, assigned to users, agents, apps or groups | `Traveler` |
 
 On a **hierarchical** resource server, holding a parent permission also covers its children.
@@ -49,7 +49,7 @@ On a **hierarchical** resource server, holding a parent permission also covers i
 3. The flow's **Authorization** step checks the remaining scopes against the user's roles in the organization unit they signed in to. The default sign-in flow includes this step.
 4. The access token's `scope` holds only what was granted, and its `aud` is the resource server's identifier.
 
-The consoles work the same way. The bootstrap **System** resource server defines the `system` permission, and the bootstrap Administrator role grants it to the Administrators group. That's why the token you copied in [Lab 0](/docs/next/beginner/lab-0) works on the management API.
+The consoles work the same way. In the quickstart, `auth-dp` registers a **Control Plane** resource server (`https://localhost:8095`) that defines the `system` permission, and its Control Plane Administrator role grants `system` to the administrators group that `admin` belongs to. That's why the token you copied in [Lab 0](/docs/next/beginner/lab-0) works on the management API. A lone data plane does the same with its bootstrap **System** resource server and Administrator role.
 
 ## AuthZEN in one paragraph
 
@@ -59,7 +59,17 @@ Sometimes an API needs to ask "may this subject do this action on this resource?
 
 1. Create a resource server with identifier `https://api.example.com/booking`, a resource `reservations` and an action `create`. That gives the permission `reservations:create`.
 2. Create a role with `reservations:create` and assign it to your test user.
-3. Sign in through your app with `scope=openid reservations:create` and `resource=https://api.example.com/booking`.
+3. Sign in through your React app asking for that scope and resource. With `@thunderid/react`, set them on the provider:
+
+```tsx
+<ThunderIDProvider
+  clientId="<client-id>"
+  baseUrl="https://localhost:8090"
+  scopes={['openid', 'reservations:create']}
+  signInOptions={{resource: 'https://api.example.com/booking'}}
+>
+```
+
 4. Decode the access token and check `scope` and `aud`. Then remove the role, sign in again and compare.
 
 :::info[🧭 Wayfinder step]
