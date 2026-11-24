@@ -60,10 +60,12 @@ A few rules worth knowing:
 
 Follow the [React quickstart](https://thunderid.dev/docs/next/getting-started/connect-your-application/react). It creates a Vite app, installs `@thunderid/react`, and adds sign-in and sign-out buttons.
 
-Two notes while you follow it:
+A few notes while you follow it:
 
 - Create the application in the **Control Plane Console** ([https://localhost:8095/console](https://localhost:8095/console)), not at `:8090`.
 - Point the SDK's `baseUrl` at the **data plane**, [`https://localhost:8090`](https://localhost:8090). That's where sign-in runs.
+- The client ID is on the app's **Overview** and **Credentials** tabs, not a General tab.
+- Right after you finish, Overview may show no client ID and say the app isn't deployed to `dp` yet. The quickstart pack applies it automatically within a few seconds, so there's nothing to deploy by hand.
 
 Then:
 

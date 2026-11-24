@@ -32,7 +32,7 @@ Wayfinder exposes its bookings as an MCP server at `http://localhost:8787/mcp`, 
 ## Protecting MCP servers and registering clients
 
 - **Protect an MCP server:** register it as a resource server whose identifier is its URL, add a permission per tool, and grant those permissions through roles. The server validates tokens offline against `/oauth2/jwks`.
-- **Register MCP clients:** manually (app type `mcp`), through Dynamic Client Registration (RFC 7591, enabled with `oauth.dcr.enabled`), or from a Client ID Metadata Document.
+- **Register MCP clients:** manually (app type `mcp`), through Dynamic Client Registration (RFC 7591, on by default with `oauth.dcr.enabled`), or from a Client ID Metadata Document.
 
 ThunderID also runs an MCP server of its own at `/mcp`, so an AI coding assistant can manage ThunderID ([module 20](/docs/next/advanced/also-in-the-box)).
 

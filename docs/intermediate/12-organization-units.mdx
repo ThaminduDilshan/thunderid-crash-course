@@ -56,7 +56,7 @@ That's how one app serves many customer OUs without being copied. Groups are nev
 
 ## 🧪 Lab
 
-1. Find the `Default` project's ID. Every OU you create on the control plane needs one:
+1. Find the `Default` project's ID, as in [module 7](/docs/next/beginner/agents). Every OU you create on the control plane needs one:
 
 ```bash
 curl -sk $CP/projects -H "Authorization: Bearer $TOKEN" | jq
@@ -72,7 +72,7 @@ curl -sk -X POST $CP/organization-units -H "Authorization: Bearer $TOKEN" \
 
 3. Create a child with `"parent":"<acme-id>"` and the same `projectId`, then resolve it by path: `GET $CP/organization-units/tree/acme/<child-handle>`.
 4. A user type is only usable in its own OU and the units below it, and the bootstrap `Person` type belongs to `Default`. In the console's organization-wide view, create a user type owned by `acme`.
-5. In the console, share your React app into `acme`. Then, in the app's token settings, add `ouId` and `ouHandle` to the access token attributes.
+5. In the console, share your React app into `acme`. `acme` is a tree of its own, not a child of `Default`, so on the app's **Organization Access** tab pick **Default and chosen organization units**, then under **Other organization trees** pick **Selected trees**. Click **Add a tree**, tick `acme`, **Grant access**, then **Save**. Then, in the app's token settings, add `ouId` and `ouHandle` to the access token attributes.
 6. Create a user in `acme` with your new user type.
 7. Point your React app's sign-in at `acme`. With `@thunderid/react`, add the OU to the provider's sign-in options, and the SDK uses the `/ou/<acme-id>/oauth2/*` endpoints:
 

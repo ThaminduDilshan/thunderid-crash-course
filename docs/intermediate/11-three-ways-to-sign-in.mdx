@@ -43,7 +43,14 @@ Wayfinder's web app uses **redirect-based** sign-in with authorization code + PK
 
 ## 🧪 Lab
 
-**App-native.** Create a `fullstack` app with no OAuth configuration and keep its Flow Secret. Then start a sign-in:
+**App-native.** Create a `fullstack` app with no OAuth configuration in the `Default` project ([module 7](/docs/next/beginner/agents) shows how to find its ID). The response carries its `flowSecret`; keep it:
+
+```bash
+curl -sk -X POST $CP/applications -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"name":"<name>","type":"fullstack","projectId":"<project-id>"}' | jq
+```
+
+Then start a sign-in:
 
 ```bash
 curl -sk -X POST $DP/flow/execute \
