@@ -49,6 +49,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: `${repo}/tree/main/`,
+          showLastUpdateTime: true,
         },
         blog: false,
         theme: {

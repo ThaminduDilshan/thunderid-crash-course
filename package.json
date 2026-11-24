@@ -62,5 +62,6 @@
     "@docusaurus/bundler": "3.9.2",
     "@docusaurus/babel": "3.9.2"
   },
-  "description": "A hands-on crash course for ThunderID, from IAM basics to the code that runs it"
+  "description": "A hands-on crash course for ThunderID, from IAM basics to the code that runs it",
+  "license": "Apache-2.0"
 }

@@ -39,3 +39,7 @@ The site is a static Docusaurus build. On Vercel, import the repository and keep
 ## Contributing
 
 Found something wrong or out of date? Open an issue or a pull request. Every claim about ThunderID behaviour should be checked against the code on `main` or the official docs.
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE).
