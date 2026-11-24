@@ -52,6 +52,10 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           editUrl: `${repo}/tree/main/`,
           showLastUpdateTime: true,
+          // The current pages are built and tested against a pack built from main, like the docs' Next.
+          versions: {
+            current: {label: 'Next', path: 'next', banner: 'none'},
+          },
         },
         blog: false,
         theme: {
@@ -88,9 +92,9 @@ const config: Config = {
         {
           title: 'Course',
           items: [
-            {label: 'Welcome', to: '/docs/intro'},
-            {label: 'Lab 0: run ThunderID', to: '/docs/beginner/lab-0'},
-            {label: 'Glossary', to: '/docs/glossary'},
+            {label: 'Welcome', to: '/docs/next/intro'},
+            {label: 'Lab 0: run ThunderID', to: '/docs/next/beginner/lab-0'},
+            {label: 'Glossary', to: '/docs/next/glossary'},
           ],
         },
         {

@@ -35,19 +35,19 @@ The `type` is required and can't change after the app is created. It decides how
 | Type | For | Signs in through |
 | --- | --- | --- |
 | `browser` | Single-page apps: React, Vue, plain JavaScript | Redirect only: authorization code + PKCE, as a public client |
-| `fullstack` | Server-rendered apps: Next.js, Express | Redirect, or its own screens with a Flow Secret ([module 11](/docs/intermediate/three-ways-to-sign-in)) |
+| `fullstack` | Server-rendered apps: Next.js, Express | Redirect, or its own screens with a Flow Secret ([module 11](/docs/next/intermediate/three-ways-to-sign-in)) |
 | `mobile` | iOS, Android, Flutter | Redirect, or its own screens with platform attestation |
 | `m2m` | Backend services with no user | `client_credentials` only |
-| `mcp` | MCP clients ([module 14](/docs/intermediate/mcp-and-delegation)) | Redirect: authorization code + refresh |
+| `mcp` | MCP clients ([module 14](/docs/next/intermediate/mcp-and-delegation)) | Redirect: authorization code + refresh |
 | `custom` | Anything else, including apps registered through dynamic client registration | Depends on its OAuth settings |
 
 The console's **templates** (React, Next.js, Android, Wallet and so on) only prefill these settings. Pick the one closest to your stack.
 
 ## What's inside an application
 
-Under the hood an application is an entity of category `app` ([module 4](/docs/beginner/users-and-user-types)) with two sets of settings:
+Under the hood an application is an entity of category `app` ([module 4](/docs/next/beginner/users-and-user-types)) with two sets of settings:
 
-- **Sign-in settings:** which flows it runs ([module 6](/docs/beginner/flows)), its theme and layout, which user types and agent types may sign in, and which attribute becomes the token's `sub`.
+- **Sign-in settings:** which flows it runs ([module 6](/docs/next/beginner/flows)), its theme and layout, which user types and agent types may sign in, and which attribute becomes the token's `sub`.
 - **OAuth settings:** grant types, redirect URIs, how the client authenticates, PKCE, whether it's public or confidential, token lifetimes and the claims each token carries.
 
 A few rules worth knowing:
@@ -60,7 +60,7 @@ A few rules worth knowing:
 
 Follow the [React quickstart](https://thunderid.dev/docs/next/getting-started/connect-your-application/react). It creates a Vite app, installs `@thunderid/react`, and adds sign-in and sign-out buttons.
 
-Two 2.0 notes while you follow it:
+Two notes while you follow it:
 
 - Create the application in the **Control Plane Console** ([https://localhost:8095/console](https://localhost:8095/console)), not at `:8090`.
 - Point the SDK's `baseUrl` at the **data plane**, [`https://localhost:8090`](https://localhost:8090). That's where sign-in runs.

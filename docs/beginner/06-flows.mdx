@@ -28,7 +28,7 @@ flowchart LR
 
 :::info[🧳 In Wayfinder]
 
-Wayfinder starts with ThunderID's bundled sign-in flow, `default-flow`: ask for a username and password, check them, sign the traveler in. Later you'll give Wayfinder its own flows for sign-up, password recovery and sign-out ([module 9](/docs/intermediate/building-journeys)), and the Wayfinder app won't change at all.
+Wayfinder starts with ThunderID's bundled sign-in flow, `default-flow`: ask for a username and password, check them, sign the traveler in. Later you'll give Wayfinder its own flows for sign-up, password recovery and sign-out ([module 9](/docs/next/intermediate/building-journeys)), and the Wayfinder app won't change at all.
 
 :::
 
@@ -58,7 +58,7 @@ curl -sk "$CP/flows?flowType=AUTHENTICATION" -H "Authorization: Bearer $TOKEN" |
    - the `TASK_EXECUTION` node that action leads to, and the executor it runs
    - that node's `onSuccess`
 3. Open the same flow in the Control Plane Console's Flow Builder and find the same nodes on the canvas.
-4. Change the sign-in screen's title text and save. Sign in to your React app from [module 5](/docs/beginner/applications) again and see the new title, with no change to the app.
+4. Change the sign-in screen's title text and save. Sign in to your React app from [module 5](/docs/next/beginner/applications) again and see the new title, with no change to the app.
 
 ## Recap
 

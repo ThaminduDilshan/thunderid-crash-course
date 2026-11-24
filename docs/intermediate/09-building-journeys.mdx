@@ -10,7 +10,7 @@ description: "Flow types, how an app picks its flows, the full node set, and the
 - How an application picks its flows, and what happens when it doesn't
 - The executors you build journeys from
 
-You met flows in [module 6](/docs/beginner/flows). This module goes from "I can read one" to "I can build one".
+You met flows in [module 6](/docs/next/beginner/flows). This module goes from "I can read one" to "I can build one".
 
 :::
 
@@ -26,12 +26,12 @@ Each flow has a type, which says what journey it is.
 | `SIGNOUT` | Ending a sign-in session |
 | `USER_ONBOARDING` | An admin onboarding a user |
 | `ADMINISTRATION` | Operational flows an admin designs |
-| `SELF` <V2 /> | A signed-in user acting on their own account |
-| `ADMIN_INITIATED` <V2 /> | Started by an admin, finished by the user |
-| `INVITATION` <V2 /> | Inviting someone into an organization unit |
-| `DEVICE_GRANT` <V2 /> | The device authorization grant ([module 16](/docs/advanced/oauth-oidc)) |
+| `SELF` | A signed-in user acting on their own account |
+| `ADMIN_INITIATED` | Started by an admin, finished by the user |
+| `INVITATION` | Inviting someone into an organization unit |
+| `DEVICE_GRANT` | The device authorization grant ([module 16](/docs/next/advanced/oauth-oidc)) |
 
-There's also `SYSTEM` <V2 />: flows the server runs internally, for example before an entity is deleted. No API can create or start one.
+There's also `SYSTEM`: flows the server runs internally, for example before an entity is deleted. No API can create or start one.
 
 :::info[🧳 In Wayfinder]
 
@@ -46,7 +46,7 @@ Wayfinder builds four journeys on top of the bundled sign-in:
 
 ## How an application gets its flows
 
-An application points at flows by ID: `authFlowId`, `registrationFlowId`, `recoveryFlowId`, `signOutFlowId` and `deviceGrantFlowId` <V2 />. Registration and recovery also have an on/off switch.
+An application points at flows by ID: `authFlowId`, `registrationFlowId`, `recoveryFlowId`, `signOutFlowId` and `deviceGrantFlowId`. Registration and recovery also have an on/off switch.
 
 Leave an ID empty and ThunderID fills it in: first from the organization unit's flow for that type, then from the server default (Ex: `default-flow` for sign-in). If the flow an app points at is deleted, sign-in falls back to the default.
 
@@ -58,7 +58,7 @@ Leave an ID empty and ThunderID fills it in: first from the organization unit's 
 | `PROMPT` | Shows a screen: inputs, actions and the UI component tree (`meta`) |
 | `TASK_EXECUTION` | Runs an executor. Branches with `onSuccess`, `onFailure` and `onIncomplete`. |
 | `CALL` | Runs another flow, such as jumping from sign-in to recovery |
-| `VARIABLES` <V2 /> | Declares flow variables, referenced as `{{var(id)}}`. Useful when a shared flow needs a different value per organization ([module 15](/docs/advanced/b2b)). |
+| `VARIABLES` | Declares flow variables, referenced as `{{var(id)}}`. Useful when a shared flow needs a different value per organization ([module 15](/docs/next/advanced/b2b)). |
 
 ## Executors
 
@@ -72,7 +72,7 @@ An executor is one unit of work. Here are the ones you'll reach for most:
 | Creating and updating users | `ProvisioningExecutor`, `AttributeCollector`, `CredentialSetter`, `UserTypeResolver`, `OUExecutor` |
 | Authorization and consent | `AuthorizationExecutor`, `PermissionValidator`, `ConsentExecutor` |
 | Sessions | `SSOCheckExecutor`, `SessionExecutor`, `SessionSignOutExecutor` |
-| Integration | `HTTPRequestExecutor`, `ExtensionExecutor` <V2 /> (calls an HTTP connection) |
+| Integration | `HTTPRequestExecutor`, `ExtensionExecutor` (calls an HTTP connection) |
 
 Some executors only work in some flow types. Ex: the session executors only in `AUTHENTICATION`.
 
@@ -80,7 +80,7 @@ Flows are versioned: `GET /flows/{id}/versions` lists them, and `POST /flows/{id
 
 ## 🧪 Lab
 
-Follow [Build a flow](https://thunderid.dev/docs/next/guides/flows/build-a-flow) to make a sign-in flow with password, Google and SMS OTP, and assign it to your React app from [module 5](/docs/beginner/applications). You can skip the Google and SMS steps until [module 10](/docs/intermediate/connections) if you don't have those accounts yet.
+Follow [Build a flow](https://thunderid.dev/docs/next/guides/flows/build-a-flow) to make a sign-in flow with password, Google and SMS OTP, and assign it to your React app from [module 5](/docs/next/beginner/applications). You can skip the Google and SMS steps until [module 10](/docs/next/intermediate/connections) if you don't have those accounts yet.
 
 :::info[🧭 Wayfinder steps]
 

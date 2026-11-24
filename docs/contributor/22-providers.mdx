@@ -30,9 +30,9 @@ A provider is an interface the runtime (flows, OAuth, the Direct API) depends on
 | `AuthnProviderManager` | Routes each credential type to the authn provider that owns it, and merges the results | `internal/authnprovider/manager` |
 | `AuthnProviderInterface` | One credential backend: verify credentials, look up the entity, fetch attributes | `defaultprovider` (catch-all). A REST provider can claim credential types and send them to an external `/authenticate` service. |
 | `EntityProvider` (internal) | Reads and writes entities for the runtime | `internal/entityprovider` |
-| `UserMgtProvider`, `AgentMgtProvider` <V2 /> | Create users and agents and set their credentials from a flow | Thin wrappers over the user and agent services |
+| `UserMgtProvider`, `AgentMgtProvider` | Create users and agents and set their credentials from a flow | Thin wrappers over the user and agent services |
 | `ActorProvider` | One view of an app or agent as an OAuth client and actor: client, credentials, groups, roles | `internal/actorprovider` |
-| `IdentityGovernanceProvider` <V2 /> | Lock, suspend and access checks at sign-in | `default` or `disabled` |
+| `IdentityGovernanceProvider` | Lock, suspend and access checks at sign-in | `default` or `disabled` |
 | `DesignProvider` | Resolves the theme and layout for a screen or message | `internal/design/resolve` |
 
 Others cover OUs, flows, resource servers, IdPs, consent, i18n, authorization, attestation, observability and the runtime store.

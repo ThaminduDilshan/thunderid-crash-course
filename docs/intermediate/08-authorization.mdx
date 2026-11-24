@@ -40,7 +40,7 @@ Every customer gets the `Traveler` role, so a customer's access token carries `s
 | **Action** | A verb on a resource. Each action becomes a permission: the resource's permission, a delimiter (default `:`), then the action's handle. | `read`, `create`, `cancel` |
 | **Role** | A set of permissions, assigned to users, agents, apps or groups | `Traveler` |
 
-On a **hierarchical** resource server <V2 />, holding a parent permission also covers its children.
+On a **hierarchical** resource server, holding a parent permission also covers its children.
 
 ## How a permission ends up in a token
 
@@ -49,11 +49,11 @@ On a **hierarchical** resource server <V2 />, holding a parent permission also c
 3. The flow's **Authorization** step checks the remaining scopes against the user's roles in the organization unit they signed in to. The default sign-in flow includes this step.
 4. The access token's `scope` holds only what was granted, and its `aud` is the resource server's identifier.
 
-The consoles work the same way. The bootstrap **System** resource server defines the `system` permission, and the bootstrap Administrator role grants it to the Administrators group. That's why the token you copied in [Lab 0](/docs/beginner/lab-0) works on the management API.
+The consoles work the same way. The bootstrap **System** resource server defines the `system` permission, and the bootstrap Administrator role grants it to the Administrators group. That's why the token you copied in [Lab 0](/docs/next/beginner/lab-0) works on the management API.
 
 ## AuthZEN in one paragraph
 
-Sometimes an API needs to ask "may this subject do this action on this resource?" at the moment of the call, not just read a token. ThunderID answers that as an [AuthZEN](https://openid.net/wg/authzen/) Policy Decision Point: `POST /access/v1/evaluation` decides from the same roles. A resource server can also hand its decisions to an external AuthZEN service <V2 />.
+Sometimes an API needs to ask "may this subject do this action on this resource?" at the moment of the call, not just read a token. ThunderID answers that as an [AuthZEN](https://openid.net/wg/authzen/) Policy Decision Point: `POST /access/v1/evaluation` decides from the same roles. A resource server can also hand its decisions to an external AuthZEN service.
 
 ## 🧪 Lab
 

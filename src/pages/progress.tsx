@@ -34,7 +34,7 @@ export default function ProgressPage(): ReactNode {
                 <span className={styles.trackIcon}>{t.icon}</span>
                 <div>
                   <Heading as="h2" className={styles.trackTitle}>
-                    <Link to={`/docs/${t.id}`}>{t.title}</Link>
+                    <Link to={`/docs/next/${t.id}`}>{t.title}</Link>
                   </Heading>
                   <span className={styles.trackMeta}>
                     {t.doneCount}/{t.modules.length} modules · checkpoint {t.checkpointTicked}/{t.checkpointItems}
@@ -55,7 +55,7 @@ export default function ProgressPage(): ReactNode {
                   );
                 })}
                 <li>
-                  <Link to={`/docs/${t.id}/checkpoint`} className={styles.checkpointLink}>
+                  <Link to={`/docs/next/${t.id}/checkpoint`} className={styles.checkpointLink}>
                     ✅ Checkpoint
                   </Link>
                 </li>

@@ -24,7 +24,7 @@ Its design goals, from the [README](https://github.com/thunder-id/thunderid#read
 
 ## The moving parts
 
-Think of ThunderID 2.0 as two kinds of server. One is where you **configure** things. The other is where people actually **sign in**.
+Think of ThunderID as two kinds of server. One is where you **configure** things. The other is where people actually **sign in**.
 
 ```mermaid
 flowchart LR
@@ -37,13 +37,13 @@ flowchart LR
 | Part | What it is | Who uses it |
 | --- | --- | --- |
 | **Data plane** (DP) | The server that runs sign-in: the OAuth 2.0 and OIDC endpoints, the flow engine and the Direct API. It also has a management API that receives configuration. | End users, apps, agents |
-| **Control plane** (CP) <V2 /> | The server where configuration is authored. It serves management APIs only and never handles a sign-in. It captures configuration versions and applies them to the data planes it manages. | Operators, CI pipelines |
+| **Control plane** (CP) | The server where configuration is authored. It serves management APIs only and never handles a sign-in. It captures configuration versions and applies them to the data planes it manages. | Operators, CI pipelines |
 | **Gate** | The hosted sign-in, sign-up and recovery screens, served by the data plane at `/gate`. | End users |
 | **Admin Console** | The data plane's console at `/console`, for users, agents, groups, roles and organization units. | Support and admin staff |
-| **Control Plane Console** <V2 /> | The control plane's console, for applications, flows, connections, roles, users and projects. | Operators |
+| **Control Plane Console** | The control plane's console, for applications, flows, connections, roles, users and projects. | Operators |
 | **SDKs** | Client libraries for JavaScript, iOS, Android and Flutter. | App developers |
 
-The split exists so configuration is written once, versioned, and rolled out to many data planes. A data plane can still run on its own: everything is reachable through its REST API and YAML. [Module 19](/docs/advanced/control-plane-data-plane) goes deeper.
+The split exists so configuration is written once, versioned, and rolled out to many data planes. A data plane can still run on its own: everything is reachable through its REST API and YAML. [Module 19](/docs/next/advanced/control-plane-data-plane) goes deeper.
 
 :::info[🧳 In Wayfinder]
 

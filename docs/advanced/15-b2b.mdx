@@ -4,19 +4,13 @@ sidebar_label: "15. B2B"
 description: "Serving business customers: one organization per company, self-service company sign-up, invitations, per-company identity providers, delegated admins and switching organizations."
 ---
 
-:::info[2.0 only]
-
-Everything in this module needs the 2.0 line (`main`).
-
-:::
-
 :::note[🎯 What you'll learn]
 
 - Why a B2B product needs more than a `company` field on each user
 - How ThunderID models each customer company as an **organization**
 - The five journeys every B2B product ends up needing, and how ThunderID covers each
 
-This builds directly on [module 12, Organization units](/docs/intermediate/organization-units).
+This builds directly on [module 12, Organization units](/docs/next/intermediate/organization-units).
 
 :::
 
@@ -31,7 +25,7 @@ A consumer app has one kind of customer: a person. A business (B2B) product sell
 
 A first version usually adds a `company` field to every user and checks it everywhere. That breaks down quickly: people who work for several companies, companies that insist on their own sign-in, admins who want to manage their own team.
 
-ThunderID's answer is to make each customer company an **organization**: an [organization unit](/docs/intermediate/organization-units) that represents a customer. The product's app, roles and flows are defined once, above all the companies, and shared down to each of them.
+ThunderID's answer is to make each customer company an **organization**: an [organization unit](/docs/next/intermediate/organization-units) that represents a customer. The product's app, roles and flows are defined once, above all the companies, and shared down to each of them.
 
 :::info[🧳 In Wayfinder Enterprise]
 

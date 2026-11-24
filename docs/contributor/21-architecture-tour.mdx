@@ -49,7 +49,7 @@ Each can be SQLite (the default) or PostgreSQL. The cache is in memory by defaul
 
 ## The embeddable engine
 
-`backend/pkg/thunderidengine` lets another Go program embed flow execution and the OAuth/OIDC routes on its own HTTP mux. The embedder supplies the providers ([module 22](/docs/contributor/providers)). It gets no management APIs, no Gate or consoles, no SSO sessions, and none of the server's HTTP middleware. The data plane binary doesn't use it: it calls the same internal `Initialize` functions directly. Anything in `pkg/` is public API, so changing it needs care.
+`backend/pkg/thunderidengine` lets another Go program embed flow execution and the OAuth/OIDC routes on its own HTTP mux. The embedder supplies the providers ([module 22](/docs/next/contributor/providers)). It gets no management APIs, no Gate or consoles, no SSO sessions, and none of the server's HTTP middleware. The data plane binary doesn't use it: it calls the same internal `Initialize` functions directly. Anything in `pkg/` is public API, so changing it needs care.
 
 
 ## Recap

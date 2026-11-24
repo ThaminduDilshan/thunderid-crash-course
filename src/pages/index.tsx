@@ -22,7 +22,7 @@ const TRACKS: Track[] = [
     modules: 'Modules 1 to 7',
     audience: 'Everyone, no IAM background needed',
     outcome: 'IAM basics, running ThunderID, users, applications, flows and agents. Finish with your own app signing people in.',
-    to: '/docs/beginner',
+    to: '/docs/next/beginner',
   },
   {
     icon: '🛠️',
@@ -30,7 +30,7 @@ const TRACKS: Track[] = [
     modules: 'Modules 8 to 14',
     audience: 'Everyone',
     outcome: 'Build Wayfinder for real: access rules, journeys, social sign-in, three ways to sign in, organizations and MCP.',
-    to: '/docs/intermediate',
+    to: '/docs/next/intermediate',
   },
   {
     icon: '🚀',
@@ -38,7 +38,7 @@ const TRACKS: Track[] = [
     modules: 'Modules 15 to 20',
     audience: 'App builders and operators',
     outcome: 'B2B organizations, the protocol catalogue, verifiable credentials, configuration as code and the control plane.',
-    to: '/docs/advanced',
+    to: '/docs/next/advanced',
   },
   {
     icon: '🧑‍💻',
@@ -46,7 +46,7 @@ const TRACKS: Track[] = [
     modules: 'Modules 21 to 25',
     audience: 'Anyone changing ThunderID',
     outcome: 'Find your way around the code, run and debug it from source, and get a pull request merged.',
-    to: '/docs/contributor',
+    to: '/docs/next/contributor',
   },
 ];
 
@@ -67,14 +67,14 @@ function Hero(): ReactNode {
         </Heading>
         <p className={styles.tagline}>{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          <Link className="button button--primary button--lg" to="/docs/intro">
+          <Link className="button button--primary button--lg" to="/docs/next/intro">
             Start the course →
           </Link>
-          <Link className="button button--outline button--secondary button--lg" to="/docs/beginner/lab-0">
+          <Link className="button button--outline button--secondary button--lg" to="/docs/next/beginner/lab-0">
             Jump to Lab 0
           </Link>
         </div>
-        <p className={styles.meta}>25 modules · 4 tracks · progress saved in your browser · targets ThunderID 2.0</p>
+        <p className={styles.meta}>25 modules · 4 tracks · progress saved in your browser · built against ThunderID main</p>
       </div>
     </header>
   );

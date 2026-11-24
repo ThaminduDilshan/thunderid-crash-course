@@ -13,7 +13,7 @@ A hands-on crash course for [ThunderID](https://github.com/thunder-id/thunderid)
 | 🚀 Advanced | 15 to 20: B2B, OAuth and OIDC, verifiable credentials, declarative config, control plane | App builders and operators |
 | 🧑‍💻 Contributor track | 21 to 25: architecture, providers, flow engine, dev setup, how work gets done | Anyone changing ThunderID |
 
-The course targets ThunderID 2.0 (`main`). Features that don't exist in the 1.x releases are marked **2.0**.
+The course is versioned like the ThunderID docs. **Next** (`/docs/next`) is built and tested against a pack built from `main`. Courses for the 1.x releases will be added as separate versions.
 
 ## Run the site locally
 
@@ -32,7 +32,6 @@ The site opens at http://localhost:3000. `npm run build` produces the static sit
 - `src/progress/`, `src/components/`: the progress bar, the checkpoints and the "Mark as complete" button. Progress is kept in the browser's `localStorage`.
 - `docs/glossary.mdx`, `docs/whats-next.mdx`
 - `src/pages/index.tsx`: the landing page
-- `src/components/V2.tsx`: the **2.0** badge, available in every page as `<V2 />`
 
 ## Deploy
 
