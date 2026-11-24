@@ -41,12 +41,12 @@ const TRACKS: Track[] = [
     to: '/docs/next/advanced',
   },
   {
-    icon: '🧑‍💻',
-    name: 'Contributor track',
-    modules: 'Modules 21 to 25',
-    audience: 'Anyone changing ThunderID',
-    outcome: 'Find your way around the code, run and debug it from source, and get a pull request merged.',
-    to: '/docs/next/contributor',
+    icon: '🎓',
+    name: 'Expert',
+    modules: 'Modules 21 to 26',
+    audience: 'Anyone who wants to know how ThunderID works inside',
+    outcome: 'The architecture, entities and entity types, caching, providers, the flow engine and the embeddable engine.',
+    to: '/docs/next/expert',
   },
 ];
 
@@ -74,7 +74,7 @@ function Hero(): ReactNode {
             Jump to Lab 0
           </Link>
         </div>
-        <p className={styles.meta}>25 modules · 4 tracks · progress saved in your browser · built against ThunderID main</p>
+        <p className={styles.meta}>26 modules · 4 tracks · progress saved in your browser · built against ThunderID main</p>
       </div>
     </header>
   );
@@ -87,7 +87,7 @@ function Tracks(): ReactNode {
         <Heading as="h2" className={styles.sectionTitle}>
           Pick up where you are
         </Heading>
-        <p className={styles.sectionLead}>Everyone takes Beginner and Intermediate. Then choose Advanced, the Contributor track, or both.</p>
+        <p className={styles.sectionLead}>Take the tracks in order. Everyone takes Beginner and Intermediate. Advanced and Expert go as deep as you need.</p>
         <div className={styles.grid}>
           {TRACKS.map((t) => (
             <Link key={t.name} to={t.to} className={styles.card}>

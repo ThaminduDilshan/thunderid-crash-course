@@ -1,6 +1,6 @@
 ---
-title: "22. Providers"
-sidebar_label: "22. Providers"
+title: "24. Providers"
+sidebar_label: "24. Providers"
 description: "The interfaces the runtime depends on, why they exist, and the rule executors follow when they write."
 ---
 
@@ -18,7 +18,7 @@ The flow engine and the OAuth server don't call services like the user service d
 
 A provider is an interface the runtime (flows, OAuth, the Direct API) depends on instead of a concrete service. Most are declared in `backend/pkg/thunderidengine/providers/interface.go`. They exist for four reasons:
 
-- **Embedding:** an embedder of the engine supplies its own implementations.
+- **Embedding:** an embedder of the engine supplies its own implementations ([module 26](/docs/next/expert/embeddable-engine)).
 - **Extension points:** a deployment can swap one in config. Several have `default` and `disabled` implementations.
 - **Breaking import cycles:** a consumer defines a small interface and `servicemanager.go` injects the implementation, instead of importing a package above it.
 - **A privilege boundary:** the entity provider reads with system authority but runs writes as the caller.

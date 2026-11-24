@@ -1,6 +1,6 @@
 ---
-title: "23. Flow engine internals"
-sidebar_label: "23. Flow engine internals"
+title: "25. Flow engine internals"
+sidebar_label: "25. Flow engine internals"
 description: "How one request runs through the flow engine, how execution state is kept, and how to add an executor."
 ---
 
@@ -39,11 +39,17 @@ An executor implements `providers.Executor` (`backend/pkg/thunderidengine/provid
 3. Mirror the same metadata in `executormeta/catalog.go`. `executor/catalog_parity_test.go` fails if the catalogue and the executor disagree.
 4. Register it in `newBuiltInExecutorRegistrars` in `executor/register.go`.
 
-A deployment can enable a subset of executors with the `flow.executors` config. Executors never call user or agent services directly to write. They go through the user and agent management providers ([module 22](/docs/next/contributor/providers)).
+A deployment can enable a subset of executors with the `flow.executors` config. Executors never call user or agent services directly to write. They go through the user and agent management providers ([module 24](/docs/next/expert/providers)).
 
 ## 🧪 Lab
 
-1. Start the backend under Delve and attach your editor, as in [module 24](/docs/next/contributor/development-setup#debug-it).
+1. Set up the source tree as in [Configure and run](https://thunderid.dev/community/contributing/contributing-code/configure-and-run) and run `make run_backend` once, so the certificates, keys and databases exist. Then start the data plane under [Delve](https://github.com/go-delve/delve) and attach your editor (a Go "attach to remote" configuration on port 2345):
+
+   ```bash
+   cd backend/cmd/server
+   dlv debug --headless --listen=127.0.0.1:2345 --api-version=2 --accept-multiclient --continue -- .
+   ```
+
 2. The source tree's backend has its own databases, so the app and user from the quickstart pack don't exist there. Create a `fullstack` app with no OAuth configuration and a test user on `https://localhost:8090`, as in [module 11](/docs/next/intermediate/three-ways-to-sign-in).
 3. Set a breakpoint in `flowexec/engine.go`, run the module 11 app-native `curl` loop, and step through one request.
 

@@ -81,7 +81,7 @@ const config: Config = {
         {type: 'docSidebar', sidebarId: 'beginner', position: 'left', label: 'Beginner'},
         {type: 'docSidebar', sidebarId: 'intermediate', position: 'left', label: 'Intermediate'},
         {type: 'docSidebar', sidebarId: 'advanced', position: 'left', label: 'Advanced'},
-        {type: 'docSidebar', sidebarId: 'contributor', position: 'left', label: 'Contributor'},
+        {type: 'docSidebar', sidebarId: 'expert', position: 'left', label: 'Expert'},
         {type: 'custom-courseProgress', position: 'right'},
       ],
     },

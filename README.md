@@ -11,7 +11,7 @@ A hands-on crash course for [ThunderID](https://github.com/thunder-id/thunderid)
 | 🌱 Beginner | 1 to 7: IAM basics, run ThunderID, users, applications, flows, agents | Everyone |
 | 🛠️ Intermediate | 8 to 14: authorization, journeys, connections, three ways to sign in, organization units, SDKs, MCP | Everyone |
 | 🚀 Advanced | 15 to 20: B2B, OAuth and OIDC, verifiable credentials, declarative config, control plane | App builders and operators |
-| 🧑‍💻 Contributor track | 21 to 25: architecture, providers, flow engine, dev setup, how work gets done | Anyone changing ThunderID |
+| 🎓 Expert | 21 to 26: architecture, entities and entity types, caching, providers, flow engine, embeddable engine | Anyone who wants to know how ThunderID works inside |
 
 The course is versioned like the ThunderID docs. **Next** (`/docs/next`) is built and tested against a pack built from `main`. Courses for the 1.x releases will be added as separate versions.
 
