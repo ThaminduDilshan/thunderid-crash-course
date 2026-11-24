@@ -34,14 +34,14 @@ ThunderID is one Go codebase that builds two binaries, plus four React apps. Bef
 
 ## Inside a domain package
 
-Each package is `handler → service → store`, wired once in `init.go` by `Initialize`. `servicemanager.go` calls every `Initialize` and passes in dependencies. A package never builds its own. Files follow a fixed layout: `service.go`, `handler.go`, `store.go`, `model.go`, `constants.go`, `error_constants.go`, `store_constants.go`, `init.go`. Stores are usually wrapped in a cache-backed store.
+Each package is `handler → service → store`, wired once in `init.go` by `Initialize`. `servicemanager.go` calls every `Initialize` and passes in dependencies. A package never builds its own. Files follow a fixed layout: `service.go`, `handler.go`, `store.go`, `model.go`, `constants.go`, `error_constants.go`, `store_constants.go`, `init.go`. A management resource's store usually comes in three modes: mutable (database), declarative (files) and composite (both), as in [module 18](/docs/next/advanced/declarative-config). Some stores also have a cache-backed wrapper.
 
 ## Four databases
 
 | Database | Holds |
 | --- | --- |
-| `configdb` | Configuration: applications, flows, IdPs, roles, themes, server config. On 2.0 also variables, secrets, gateways and configuration versions. |
-| `entitydb` | Identities: OUs, entities (users, agents, apps), groups, identifiers. On 2.0 also projects. |
+| `configdb` | Configuration: applications' inbound and OAuth settings, flows, IdPs, roles, themes, server config, variables, secrets, gateways and configuration versions. |
+| `entitydb` | Identities: OUs, entities (users, agents, and applications as `ENTITY` rows), groups, identifiers and projects. |
 | `runtime_transient` | Short-lived state: flow executions, authorization codes, PAR, CIBA and device requests. Can be Redis. |
 | `runtime_persistent` | Longer-lived runtime data: sessions, consent, revoked tokens. |
 

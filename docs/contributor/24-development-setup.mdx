@@ -29,10 +29,9 @@ fork [thunder-id/thunderid](https://github.com/thunder-id/thunderid), clone your
 | Goal | Command | What you get |
 | --- | --- | --- |
 | Everything, like the quickstart pack | `make run` | DP on 8090, auth-dp on 8091, CP on 8095, Gate on 5190, Admin Console on 5192, CP Console on 5193 |
-| Only the data plane side | `make run_dp` | DP and its Admin Console |
+| Only the data plane side | `make run_dp` | DP, its Admin Console and the Gate dev server |
 | Only the control plane side | `make run_cp` | CP, its console and auth-dp |
 | One backend, frontends separately | `make run_backend` + `make run_frontend` | An all-in-one backend and the full Console on 5191, easier to debug |
-| Backend under Delve | `make debug_backend` | Attach from VS Code |
 
 `make run` keeps databases, keys and secrets in `target/dev-quickstart/`. Delete it to start clean. With `make run_backend`, seed data once with `go run -C backend/cmd/server . bootstrap --admin-password admin` (see the debugging guide for the full command).
 
@@ -45,10 +44,21 @@ fork [thunder-id/thunderid](https://github.com/thunder-id/thunderid), clone your
 | One integration test | `make test_integration RUN="TestName"` |
 | Frontend unit tests | `make test_frontend` |
 | Playwright end-to-end | `make test_e2e` |
-| Everything CI runs locally | `make pr_checks` |
+| The checks to run before opening a PR | `make pr_checks` |
 | Regenerate mocks after changing an interface | `make mockery` |
 
-New code needs at least 80% coverage. CI also runs integration tests against SQLite, PostgreSQL and Redis.
+New code needs at least 80% coverage. CI runs more than `make pr_checks`: integration tests against PostgreSQL and Redis, control plane and pack integration tests, Playwright and CLI end-to-end tests, and the docs build.
+
+## Debug it
+
+Run `make run_backend` once, so the certificates, keys and databases exist. Then start the data plane under [Delve](https://github.com/go-delve/delve) and attach from VS Code (a Go "attach to remote" configuration on port 2345):
+
+```bash
+cd backend/cmd/server
+dlv debug --headless --listen=127.0.0.1:2345 --api-version=2 --accept-multiclient --continue -- .
+```
+
+The `make debug_backend` target is broken on `main` today: the `build.sh` function behind it was removed.
 
 ## Where the rules live
 
@@ -58,7 +68,8 @@ New code needs at least 80% coverage. CI also runs integration tests against SQL
 ## Recap
 
 - `make run` gives you the full quickstart layout from source.
-- `make pr_checks` runs what CI runs, locally.
+- `make pr_checks` is the gate before a PR. CI runs more on top of it.
+- Debug the backend by running it under Delve.
 - `AGENTS.md` files and `.agent/skills/` hold the coding rules.
 
 Go deeper: [Prerequisites](https://thunderid.dev/community/contributing/contributing-code/prerequisites), [Configure and run](https://thunderid.dev/community/contributing/contributing-code/configure-and-run), [Debugging](https://thunderid.dev/community/contributing/contributing-code/debugging), [Useful commands](https://thunderid.dev/community/contributing/contributing-code/optional-setup/useful-commands).
