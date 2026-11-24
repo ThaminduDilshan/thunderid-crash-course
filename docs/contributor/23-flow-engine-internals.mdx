@@ -28,7 +28,7 @@ The flow engine lives in `backend/internal/flow/`: `mgt` (flow CRUD, validation,
 
 The TTL is fixed when the flow starts: 3600 s for sign-in and registration, 1800 s for recovery and sign-out, 86400 s for onboarding and invitation, overridable per type with `flow.<type>.expirySeconds`. A late `executionId` gets `FES-1004`. This execution context isn't the SSO session, which is separate and per flow.
 
-**System flows 2.0:** services run `SYSTEM` flows in process through `ExecuteSystemFlow`. Their definitions are JSON under `flow/mgt/system/` (Ex: `entity_delete_pre.json`, `revocation_post.json`).
+**System flows:** services run `SYSTEM` flows in process through `ExecuteSystemFlow`. Their definitions are JSON under `flow/mgt/system/` (Ex: `entity_delete_pre.json`, `revocation_post.json`).
 
 ## Adding an executor
 
@@ -39,11 +39,11 @@ An executor implements `providers.Executor` (`backend/pkg/thunderidengine/provid
 3. Add its metadata, including the flow types it's allowed in, to `executormeta/catalog.go`. `catalog_parity_test.go` fails if the catalogue and the executor disagree.
 4. Register it in `newBuiltInExecutorRegistrars` in `executor/register.go`.
 
-A deployment can enable a subset of executors with the `flow.executors` config. Executors never call user or agent services directly to write. They go through the user and agent management providers ([module 22](/docs/contributor/providers)).
+A deployment can enable a subset of executors with the `flow.executors` config. Executors never call user or agent services directly to write. They go through the user and agent management providers ([module 22](/docs/next/contributor/providers)).
 
 ## 🧪 Lab
 
-set a breakpoint in `flowexec/engine.go` with `make debug_backend`, then run the [module 11](/docs/intermediate/three-ways-to-sign-in) `curl` loop and step through one request.
+set a breakpoint in `flowexec/engine.go` with `make debug_backend`, then run the [module 11](/docs/next/intermediate/three-ways-to-sign-in) `curl` loop and step through one request.
 
 ## Recap
 

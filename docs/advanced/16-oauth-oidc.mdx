@@ -25,18 +25,18 @@ Checked against the code on `main`.
 | [Refresh token](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/refresh-token) | RFC 6749 | Rotated on use by default |
 | [Token exchange](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/token-exchange) | RFC 8693 | Also how assertions become tokens |
 | [Identity assertion grant](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/identity-assertion-grant) | IETF draft (ID-JAG) | JWT bearer grant, on when `id_jag.acceptance` is set |
-| [Device authorization](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/device-authorization) <V2 /> | RFC 8628 | `/oauth2/device-authorize` |
+| [Device authorization](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/device-authorization) | RFC 8628 | `/oauth2/device-authorize` |
 | [CIBA](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/backchannel-authentication) | OpenID CIBA Core | `/oauth2/bc-authorize`, poll mode |
 | [PAR](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/par) | RFC 9126 | `/oauth2/par` |
 | [DPoP](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/dpop) | RFC 9449 | Per-app `dpopBoundAccessTokens` |
-| [Rich authorization requests](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/rich-authorization-requests) <V2 /> | RFC 9396 | `authorization_details`, types at `/oauth2/authorization-details-types` |
+| [Rich authorization requests](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/rich-authorization-requests) | RFC 9396 | `authorization_details`, types at `/oauth2/authorization-details-types` |
 | [Resource indicators](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/resource-indicators) | RFC 8707 | `resource` parameter, one per request |
 | [Introspection](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/token-introspection) | RFC 7662 | `/oauth2/introspect` |
 | [Revocation](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/token-revocation) | RFC 7009 | `/oauth2/revoke`, when enabled |
 | [Dynamic client registration](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/dynamic-client-registration) | RFC 7591, 7592 | `/oauth2/dcr/register`, when enabled |
 | [OpenID Connect](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/openid-connect), [UserInfo](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/userinfo) | OIDC Core 1.0 | ID token, `/oauth2/userinfo` |
 | [RP-initiated logout](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/rp-initiated-logout) | OIDC RP-Initiated Logout | `end_session_endpoint` |
-| [Back-channel logout](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/backchannel-logout) <V2 /> | OIDC Back-Channel Logout | Per-app `backchannelLogoutUri` |
+| [Back-channel logout](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/backchannel-logout) | OIDC Back-Channel Logout | Per-app `backchannelLogoutUri` |
 | [Server metadata](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/server-metadata) | RFC 8414, OIDC Discovery | `/.well-known/openid-configuration`, `/.well-known/oauth-authorization-server` |
 | [Issuer identification](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/issuer-identification) | RFC 9207 | `iss` on authorization responses |
 | [JWKS](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/jwks) | RFC 7517 | `/oauth2/jwks` |

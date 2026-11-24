@@ -36,14 +36,14 @@ The Wayfinder sample ships its whole setup as one YAML bundle plus a `thunderid.
 
 `POST /export` writes chosen resources back out as YAML. Values that differ per environment come out as **references** instead of literals:
 
-- `var:` <V2 /> names an ordinary value, such as a client ID. It's read back as it is.
-- `sec:` <V2 /> names a secret, such as a client secret. It's never read back.
+- `var:` names an ordinary value, such as a client ID. It's read back as it is.
+- `sec:` names a secret, such as a client secret. It's never read back.
 
 The target server holds the actual values (`/variables`, `/secrets`) and fills them in at import. A secret never travels in the YAML.
 
 ## 🧪 Lab
 
-1. Read `backend/cmd/server/bootstrap/01-default-resources.yaml` in the ThunderID repo. Find the `person` user type ([module 4](/docs/beginner/users-and-user-types)), the default sign-in flow ([module 6](/docs/beginner/flows)) and the Administrator role ([module 8](/docs/intermediate/authorization)).
+1. Read `backend/cmd/server/bootstrap/01-default-resources.yaml` in the ThunderID repo. Find the `person` user type ([module 4](/docs/next/beginner/users-and-user-types)), the default sign-in flow ([module 6](/docs/next/beginner/flows)) and the Administrator role ([module 8](/docs/next/intermediate/authorization)).
 2. Export your React app and your resource server with `POST $CP/export`. See how the client secret comes out.
 3. Change the app's name in the YAML and send it back with `POST $CP/import`.
 

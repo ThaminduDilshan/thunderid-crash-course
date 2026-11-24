@@ -4,12 +4,6 @@ sidebar_label: "19. Control and data plane"
 description: "How the control plane authors configuration, how versions reach data planes, and what projects are for."
 ---
 
-:::info[2.0 only]
-
-Everything in this module needs the 2.0 line (`main`).
-
-:::
-
 :::note[🎯 What you'll learn]
 
 - What the control plane and the data plane each do, and why they're separate
@@ -45,7 +39,7 @@ sequenceDiagram
 ```
 
 - A **gateway** is a data plane registered with a control plane.
-- Credentials never travel in the bundle. The bundle refers to them with `sec:` ([module 18](/docs/advanced/declarative-config)).
+- Credentials never travel in the bundle. The bundle refers to them with `sec:` ([module 18](/docs/next/advanced/declarative-config)).
 - Auto-apply is off by default and on in the quickstart pack. Without it, apply a version yourself with `POST /gateways/{id}/apply`. You can also diff and revert a gateway.
 
 ## Projects

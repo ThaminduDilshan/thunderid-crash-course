@@ -14,7 +14,7 @@ description: "Redirect-based, app-native and Direct API sign-in: who owns the sc
 
 ## The idea
 
-In [module 5](/docs/beginner/applications) your React app sent people to ThunderID's sign-in page and got them back with a code. That's the most common way, but not the only one. A mobile app may want its own native screens. A command-line tool has no screens at all. ThunderID offers three **integration models**, and they differ in two things: who renders the screens, and who decides the order of steps.
+In [module 5](/docs/next/beginner/applications) your React app sent people to ThunderID's sign-in page and got them back with a code. That's the most common way, but not the only one. A mobile app may want its own native screens. A command-line tool has no screens at all. ThunderID offers three **integration models**, and they differ in two things: who renders the screens, and who decides the order of steps.
 
 | | Redirect-based | App-native | Direct API |
 | --- | --- | --- | --- |
@@ -25,7 +25,7 @@ In [module 5](/docs/beginner/applications) your React app sent people to Thunder
 | What you get at the end | An authorization code, then tokens | An **assertion** JWT, exchanged for tokens with token exchange ([RFC 8693](https://datatracker.ietf.org/doc/html/rfc8693)) | An assertion JWT, exchanged the same way |
 | Fits | Any app that can redirect, including SPAs | Native mobile and confidential server-side apps | CLIs, scripts, server-to-server |
 
-Redirect-based and app-native run the **same flows** ([module 9](/docs/intermediate/building-journeys)), so a flow change reaches both. Gate itself is a client of the Flow Execution API: it's an app-native client that ThunderID ships for you.
+Redirect-based and app-native run the **same flows** ([module 9](/docs/next/intermediate/building-journeys)), so a flow change reaches both. Gate itself is a client of the Flow Execution API: it's an app-native client that ThunderID ships for you.
 
 :::info[🧳 In Wayfinder]
 
@@ -67,7 +67,7 @@ curl -sk -X POST $DP/auth/credentials/authenticate \
   -d '{"identifiers":{"username":"<user>"},"credentials":{"password":"<password>"}}'
 ```
 
-Decode both assertions and compare them with the ID token from [module 5](/docs/beginner/applications).
+Decode both assertions and compare them with the ID token from [module 5](/docs/next/beginner/applications).
 
 :::info[🧭 Wayfinder steps]
 

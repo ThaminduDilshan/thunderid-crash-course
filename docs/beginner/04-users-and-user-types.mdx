@@ -39,8 +39,8 @@ ThunderID stores every principal as an **entity**, with a category:
 | Category | What it is | Its type |
 | --- | --- | --- |
 | `user` | A person | A user type (Ex: the bootstrap `person`) |
-| `agent` | An AI agent or other autonomous software ([module 7](/docs/beginner/agents)) | An agent type (Ex: the bootstrap `default`) |
-| `app` | An application ([module 5](/docs/beginner/applications)) | None. Apps have no schema. |
+| `agent` | An AI agent or other autonomous software ([module 7](/docs/next/beginner/agents)) | An agent type (Ex: the bootstrap `default`) |
+| `app` | An application ([module 5](/docs/next/beginner/applications)) | None. Apps have no schema. |
 
 Because they share one model, users, agents and apps can all join groups, hold roles and authenticate in similar ways.
 
@@ -48,7 +48,7 @@ Because they share one model, users, agents and apps can all join groups, hold r
 
 A user type (or agent type) is a list of attributes, each with a type and some rules.
 
-- **Attribute types:** `string`, `email` <V2 />, `mobile` <V2 />, `number`, `boolean`, `object`, `array`.
+- **Attribute types:** `string`, `email`, `mobile`, `number`, `boolean`, `object`, `array`.
 - **Rules on an attribute:**
   - `required`: every user must have it.
   - `unique`: no two users may share the value.
@@ -56,7 +56,7 @@ A user type (or agent type) is a list of attributes, each with a type and some r
   - `regex`: the value must match a pattern. This is also how you set password rules.
   - `credential`: the value is a secret, such as a password. It's hashed, stored apart from the profile, and never returned by the API.
 - **Display and contact:** a type can name the attribute used as the display name, and the primary email and mobile used for notifications.
-- **Ownership:** each type belongs to an organization unit ([module 12](/docs/intermediate/organization-units)).
+- **Ownership:** each type belongs to an organization unit ([module 12](/docs/next/intermediate/organization-units)).
 
 The bootstrap `person` type has `username` and `email` (both required and unique) and a `password` marked as a credential.
 
@@ -68,7 +68,7 @@ The bootstrap `person` type has `username` and `email` (both required and unique
 
 ## Groups
 
-A **group** collects members so you can manage them together, such as giving a whole team a role at once. Members can be users, agents, apps or other groups. Members must belong to the group's organization unit or be shared into it ([module 12](/docs/intermediate/organization-units)).
+A **group** collects members so you can manage them together, such as giving a whole team a role at once. Members can be users, agents, apps or other groups. Members must belong to the group's organization unit or be shared into it ([module 12](/docs/next/intermediate/organization-units)).
 
 ## 🧪 Lab
 

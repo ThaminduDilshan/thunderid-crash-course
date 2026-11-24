@@ -10,7 +10,7 @@ description: "Securing MCP servers and clients, and the agent patterns where an 
 - How an agent acts on behalf of a user, and how the token records it
 - How one agent calls another
 
-You met agents and their own tokens in [module 7](/docs/beginner/agents).
+You met agents and their own tokens in [module 7](/docs/next/beginner/agents).
 
 :::
 
@@ -32,9 +32,9 @@ Wayfinder exposes its bookings as an MCP server at `http://localhost:8787/mcp`, 
 ## Protecting MCP servers and registering clients
 
 - **Protect an MCP server:** register it as a resource server whose identifier is its URL, add a permission per tool, and grant those permissions through roles. The server validates tokens offline against `/oauth2/jwks`.
-- **Register MCP clients:** manually (app type `mcp`), through Dynamic Client Registration (RFC 7591, enabled with `oauth.dcr.enabled`), or from a Client ID Metadata Document <V2 />.
+- **Register MCP clients:** manually (app type `mcp`), through Dynamic Client Registration (RFC 7591, enabled with `oauth.dcr.enabled`), or from a Client ID Metadata Document.
 
-ThunderID also runs an MCP server of its own at `/mcp`, so an AI coding assistant can manage ThunderID ([module 20](/docs/advanced/also-in-the-box)).
+ThunderID also runs an MCP server of its own at `/mcp`, so an AI coding assistant can manage ThunderID ([module 20](/docs/next/advanced/also-in-the-box)).
 
 ## Agents acting for users
 

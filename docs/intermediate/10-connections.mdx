@@ -28,9 +28,9 @@ Wayfinder's recovery flow emails a recovery link through an SMTP **email provide
 | --- | --- | --- |
 | Identity providers | `google`, `github`, `oidc`, `oauth` | Social and federated sign-in executors |
 | SMS senders | `twilio`, `vonage`, `sms-gateway` | `SMSExecutor`, OTP |
-| Email providers <V2 /> | `email-smtp` | `EmailExecutor`: magic links, invitations, recovery |
-| HTTP connections <V2 /> | `http` | `ExtensionExecutor`, to call your own services from a flow |
-| AuthZEN PDP <V2 /> | `authzen-pdp` | Resource servers that delegate decisions ([module 8](/docs/intermediate/authorization)) |
+| Email providers | `email-smtp` | `EmailExecutor`: magic links, invitations, recovery |
+| HTTP connections | `http` | `ExtensionExecutor`, to call your own services from a flow |
+| AuthZEN PDP | `authzen-pdp` | Resource servers that delegate decisions ([module 8](/docs/next/intermediate/authorization)) |
 
 ## Federation: signing in with another IdP
 
