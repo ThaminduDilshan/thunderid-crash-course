@@ -25,10 +25,9 @@ Design goals from the [README](https://github.com/thunder-id/thunderid#readme):
 
 ```mermaid
 flowchart LR
-  op([Operator]) -->|authors| cp["Control plane<br/>Console, management APIs,<br/>projects, configuration versions"]
-  op -->|signs in| auth["auth-dp<br/>trusted issuer"]
-  auth -. CP trusts its tokens .-> cp
-  cp -->|applies versions| dp["Data plane (gateway)<br/>Gate, OAuth and OIDC, flow engine,<br/>Direct API, Admin Console"]
+  op([Operator]) -->|authors| cp[Control plane]
+  auth["auth-dp<br/>(trusted issuer)"] -.->|signs operators in| cp
+  cp -->|applies configuration versions| dp[Data plane]
   users([Users, apps, agents]) -->|sign in| dp
 ```
 

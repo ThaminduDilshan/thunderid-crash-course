@@ -6,7 +6,7 @@ const repo = 'https://github.com/ThaminduDilshan/thunderid-crash-course';
 
 const config: Config = {
   title: 'ThunderID Crash Course',
-  tagline: 'Learn ThunderID by running it: from IAM basics to the code that runs it.',
+  tagline: 'A hands-on crash course, from IAM basics to the code that runs it.',
   favicon: 'img/favicon.svg',
 
   future: {
@@ -71,10 +71,8 @@ const config: Config = {
       title: '⚡ ThunderID Crash Course',
       items: [
         {type: 'docSidebar', sidebarId: 'course', position: 'left', label: 'Course'},
-        {to: '/docs/beginner', label: '🌱 Beginner', position: 'left'},
-        {to: '/docs/intermediate', label: '🛠️ Intermediate', position: 'left'},
-        {to: '/docs/advanced', label: '🚀 Advanced', position: 'left'},
-        {to: '/docs/contributor', label: '🧑‍💻 Contributor', position: 'left'},
+        {to: '/docs/beginner/lab-0', label: 'Lab 0', position: 'left'},
+        {to: '/docs/glossary', label: 'Glossary', position: 'left'},
         {href: 'https://thunderid.dev/docs/next/', label: 'ThunderID Docs', position: 'right'},
         {href: repo, label: 'GitHub', position: 'right'},
       ],
