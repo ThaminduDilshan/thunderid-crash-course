@@ -20,7 +20,7 @@ ThunderID gives each agent an identity of its own, managed like a person's: it h
 
 :::info[🧳 In Wayfinder]
 
-Wayfinder adds a travel concierge: an AI agent called `WAYFINDER-CONCIERGE` that recommends trips. It's registered as an agent with its own client, and it holds a `Recommender` role that grants `booking:read` and `booking:recommend` on the booking API, and nothing more. It can't create or cancel bookings on its own.
+Wayfinder adds a travel concierge: an AI agent called `WAYFINDER-CONCIERGE` that recommends trips. It's registered as an agent with its own client, and it holds a `Recommender` role that grants `booking:recommend` on the booking API. It can't create or cancel bookings on its own.
 
 :::
 
@@ -35,14 +35,14 @@ An agent is an entity of category `agent` ([module 4](/docs/next/beginner/users-
 
 ## How an agent signs in
 
-There are four patterns. This module covers the first. [Module 14](/docs/next/intermediate/mcp-and-delegation) covers the rest.
+There are four patterns. This module covers the first. [Module 14](/docs/next/intermediate/mcp-and-delegation) covers the rest, once you've seen roles and tokens in more depth.
 
-| Pattern | How | The token's subject |
+| Pattern | In plain words | Whose token it is |
 | --- | --- | --- |
-| **Own token** | `client_credentials` with the agent's client | The agent, with `sub_type=agent` |
-| Agent sign-in | The agent completes a sign-in flow | The agent |
-| On behalf of a user | The user signs in and consents. The agent gets a token for that user. | The user, with the agent in the `act` claim |
-| Agent to agent | Token exchange with an `actor_token` | Nested `act` claims record the chain |
+| **Own token** | The agent signs in with its own client ID and secret (`client_credentials`) | The agent's, with `sub_type=agent` |
+| Agent sign-in | The agent completes a sign-in flow, like a person would | The agent's |
+| On behalf of a user | A person signs in and agrees to let the agent act for them | The person's, with a note naming the agent |
+| Agent to agent | One agent hands part of its authority to another | A chain that records every agent involved |
 
 ## 🧪 Lab
 

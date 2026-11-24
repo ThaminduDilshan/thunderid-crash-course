@@ -22,37 +22,40 @@ The **quickstart pack** runs three ThunderID deployments that are already wired 
 | `cp` | [https://localhost:8095](https://localhost:8095) | The control plane and its console. Changes here are applied to `dp` automatically. |
 | `auth-dp` | [https://localhost:8091](https://localhost:8091) | A second data plane whose only job is signing operators into the Control Plane Console. |
 
-## Step 1: install and start
+## Step 1: build and start
 
-Pick one option.
+This course is built and tested against `main`. The milestone releases trail `main` by hundreds of commits, and several labs fail on them, so build the quickstart pack from source.
 
-**Option A: the release pack** (anyone)
+You need Git, Go, Node.js LTS and pnpm. The [contributing guide](https://github.com/thunder-id/thunderid/blob/main/CONTRIBUTING.md) lists the exact versions.
 
-1. Download `thunderid-2.0.0-m1-<os>-<arch>.zip` from the [v2.0.0-m1 release](https://github.com/thunder-id/thunderid/releases/tag/v2.0.0-m1). The `thunderid-gateway-*` zip is a lone data plane, not the quickstart.
-2. Unzip it and run `./setup.sh` once. It generates this deployment's TLS, signing and encryption keys, and asks for two passwords: `admin` (Control Plane Console) and `servicedeskadmin` (Admin Console).
-3. Run `./start.sh`.
+1. Clone [thunder-id/thunderid](https://github.com/thunder-id/thunderid) and build the pack:
 
-**Option B: from source** (contributors)
+```bash
+git clone https://github.com/thunder-id/thunderid.git
+cd thunderid
+make build
+```
 
-Clone [thunder-id/thunderid](https://github.com/thunder-id/thunderid) and run `make run`. Both accounts default to `admin` / `admin`, and the consoles run on dev servers. [Module 24](/docs/next/contributor/development-setup) explains the dev setup.
+2. Unzip `target/dist/thunderid-<version>-<os>-<arch>.zip` under `target/` and go into the extracted folder. The `thunderid-gateway-*` zip next to it is a lone data plane, not the quickstart.
+3. Run `./setup.sh` once. It generates this deployment's TLS, signing and encryption keys, and sets two accounts: `admin` (Control Plane Console) and `servicedeskadmin` (Admin Console). Press Enter to accept a generated password, and note both.
+4. Run `./start.sh`.
 
 :::warning[Self-signed certificate]
 
-The local servers use a self-signed TLS certificate, so your browser warns the first time you open each one. Accept the warning for `localhost`. In `curl`, pass `-k`.
+The local servers use a self-signed TLS certificate, so your browser warns the first time you open each one. Accept the warning for `localhost` on each port. In `curl`, pass `-k`.
 
 :::
 
 ## Step 2: tour the consoles
 
-1. Open the Control Plane Console: [https://localhost:8095/console](https://localhost:8095/console), or [https://localhost:5193/console](https://localhost:5193/console) from source. It sends you to `auth-dp` to sign in as `admin`. Look around: Applications, Flows, Users, Roles.
-2. Open the Admin Console: [https://localhost:8090/console](https://localhost:8090/console), or [https://localhost:5192/console](https://localhost:5192/console) from source. Sign in as the Service Desk Admin on the data plane's own Gate.
-3. In the Control Plane Console, create a user. A couple of seconds later, find the same user in the Admin Console. That round trip is the control plane applying a new configuration version to the data plane.
+1. Open the Control Plane Console: [https://localhost:8095/console](https://localhost:8095/console). It sends you to `auth-dp` to sign in as `admin`.
+2. The console opens in the `Default` project ([module 2](/docs/next/beginner/what-thunderid-is#how-configuration-is-organized)). The sidebar shows what's created inside a project: Applications, Agents, Resource servers, Roles, Flows and Groups under **Build**, and Users and Organization units under **Identities**.
+3. Clear the project selection with the ✕ on the **Project** selector in the header. This is the organization-wide view: Projects, Deployment, and the settings **shared by all projects**, such as User types and Connections. Pick `Default` in the selector to go back.
+4. Open the Admin Console: [https://localhost:8090/console](https://localhost:8090/console). Sign in as `servicedeskadmin` on the data plane's own Gate.
+5. Back in the Control Plane Console, open the `Default` project, then **Users**, and add a user. Pick the bootstrap `Person` user type and the `Default` organization unit. [Module 4](/docs/next/beginner/users-and-user-types) explains user types.
+6. A couple of seconds later, find the same user in the Admin Console. That round trip is the control plane applying a new configuration version to the data plane.
 
-:::tip[On 1.x]
-
-The 1.x releases have no control plane. A data plane there serves one full Console at `/console` that manages everything. On 2.0, every data plane pack ships only the Admin Console, and applications, connections and flows are authored on the control plane or through the data plane's API and YAML.
-
-:::
+A data plane pack ships only the Admin Console. Applications, connections and flows are authored on the control plane, or through a data plane's API and YAML.
 
 ## Step 3: peek at the public endpoints
 
@@ -85,14 +88,15 @@ Tokens expire. When calls start returning `401`, copy a fresh one. On a lone dat
 
 Do [Set up your environment](https://thunderid.dev/docs/next/use-cases/b2c/build-environment) now. It downloads the Wayfinder sample you'll build out over the next tracks.
 
-The docs pages were written for a single full Console. On 2.0, whenever a docs page says to use the Console at `:8090` for applications, flows or import, use the Control Plane Console at `:8095` instead.
+Some docs pages were written for a single full Console. Whenever a docs page says to use the Console at `:8090` for applications, flows or import, use the Control Plane Console at `:8095` instead.
 
 :::
 
 ## Recap
 
+- Build the quickstart pack from `main`, so the labs match what you run.
 - The quickstart pack runs a data plane (`:8090`), a control plane (`:8095`) and `auth-dp` (`:8091`).
-- Author on the control plane. Watch changes land on the data plane.
+- Author on the control plane, inside a project. Watch changes land on the data plane.
 - `$TOKEN`, `$CP` and `$DP` are set for every lab that follows.
 
 Go deeper: [Get ThunderID](https://thunderid.dev/docs/next/getting-started/get-thunderid), [Quickstart pack README](https://github.com/thunder-id/thunderid/blob/main/quickstart/README.md).
