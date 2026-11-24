@@ -14,13 +14,13 @@ description: "How the control plane authors configuration, how versions reach da
 
 ## The idea
 
-Imagine Wayfinder runs sign-in in three regions. Configuring each region's server by hand means three chances to get it wrong. ThunderID 2.0 splits the job: the **control plane** (CP) is the one place you author configuration, and it pushes versioned snapshots to any number of **data planes** (DPs), where people actually sign in. They're two builds of one codebase: `backend/cmd/cpserver` and `backend/cmd/server`.
+Imagine Wayfinder runs sign-in in three regions. Configuring each region's server by hand means three chances to get it wrong. ThunderID splits the job: the **control plane** (CP) is the one place you author configuration, and it pushes versioned snapshots to the **data planes** (DPs) it manages, where people actually sign in. By default a control plane registers one data plane (`gateway.max_gateways`), and only the default gateway receives credential values. They're two builds of one codebase: `backend/cmd/cpserver` and `backend/cmd/server`.
 
 | | Control plane | Data plane |
 | --- | --- | --- |
 | Serves | Management APIs and the Control Plane Console | OAuth 2.0/OIDC, flows, the Direct API, Gate, the Admin Console, and its own management API |
 | Sign-in traffic | None. The sign-in packages aren't even compiled in, and a test enforces it. | All of it |
-| Its console's users sign in through | A trusted issuer, a data plane such as `auth-dp` | The data plane's own Gate |
+| Its console's users sign in through | A separate data plane, such as `auth-dp` in the quickstart | The data plane's own Gate |
 | Holds | Projects, gateways, configuration versions | The configuration applied to it, plus its users and runtime data |
 
 ## How a change reaches a data plane
@@ -31,9 +31,9 @@ sequenceDiagram
   participant CP as Control plane
   participant DP as Data plane (gateway)
   Op->>CP: Change an app, flow or role
+  CP->>DP: Write any new credential values to the DP's secret store
   Note over CP: About 2 seconds after the last change
   CP->>CP: Capture a new configuration version
-  CP->>DP: Write credential values to the DP's secret store
   CP->>DP: Import the version with the gateway's API key
   Note over DP: Applied resources are read-only here
 ```
@@ -46,7 +46,7 @@ sequenceDiagram
 
 A **project** groups configuration on the control plane, Ex: one per product or team.
 
-- **Project-level:** applications, agents, flows, notification templates
+- **Project-level:** applications, agents, flows, organization units, notification templates, intents (authorization detail types) and verifiable credential configurations
 - **Organization-level:** user types, agent types, connections
 - **Either:** users, groups, roles, resource servers
 - **Deployment-level:** translations, server config, variables, secrets
@@ -63,7 +63,7 @@ curl -sk $CP/configuration-versions -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 3. List the gateways, then check which version one has applied: `GET $CP/gateways/<id>/applied-version`.
-4. Try to edit the synced app through the data plane's management API, and see it refused.
+4. Try to edit the synced app through the data plane's management API, and see it refused. You need a data plane token for this: `$TOKEN` is issued by `auth-dp` for the control plane, so the data plane answers `401`. Copy a token from the Admin Console ([https://localhost:8090/console](https://localhost:8090/console)) the same way as in [Lab 0](/docs/next/beginner/lab-0#step-4-get-a-token-for-the-api-labs). The data plane refuses the edit with `400 APP-1069`.
 
 ## Recap
 

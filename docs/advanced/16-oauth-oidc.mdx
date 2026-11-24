@@ -23,17 +23,18 @@ Checked against the code on `main`.
 | [PKCE](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/pkce) | RFC 7636 | `S256` only |
 | [Client credentials](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/client-credentials) | RFC 6749 | `grant_type=client_credentials` |
 | [Refresh token](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/refresh-token) | RFC 6749 | Rotated on use by default |
-| [Token exchange](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/token-exchange) | RFC 8693 | Also how assertions become tokens |
-| [Identity assertion grant](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/identity-assertion-grant) | IETF draft (ID-JAG) | JWT bearer grant, on when `id_jag.acceptance` is set |
+| [Token exchange](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/token-exchange) | RFC 8693 | Also redeems flow assertions ([module 11](/docs/next/intermediate/three-ways-to-sign-in)) and issues ID-JAGs |
+| [Identity assertion grant](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/identity-assertion-grant) | IETF draft (ID-JAG) | An ID-JAG becomes an access token through the JWT bearer grant. Issuance and acceptance are on by default. |
 | [Device authorization](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/device-authorization) | RFC 8628 | `/oauth2/device-authorize` |
 | [CIBA](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/backchannel-authentication) | OpenID CIBA Core | `/oauth2/bc-authorize`, poll mode |
 | [PAR](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/par) | RFC 9126 | `/oauth2/par` |
-| [DPoP](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/dpop) | RFC 9449 | Per-app `dpopBoundAccessTokens` |
+| [DPoP](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/dpop) | RFC 9449 | Any client that sends a proof gets a bound token. Per-app `dpopBoundAccessTokens` or `oauth.dpop.required` makes the proof mandatory. |
 | [Rich authorization requests](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/rich-authorization-requests) | RFC 9396 | `authorization_details`, types at `/oauth2/authorization-details-types` |
 | [Resource indicators](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/resource-indicators) | RFC 8707 | `resource` parameter, one per request |
 | [Introspection](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/token-introspection) | RFC 7662 | `/oauth2/introspect` |
-| [Revocation](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/token-revocation) | RFC 7009 | `/oauth2/revoke`, when enabled |
-| [Dynamic client registration](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/dynamic-client-registration) | RFC 7591, 7592 | `/oauth2/dcr/register`, when enabled |
+| [Revocation](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/token-revocation) | RFC 7009 | `/oauth2/revoke`, on by default |
+| [Dynamic client registration](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/dynamic-client-registration) | RFC 7591, 7592 | `/oauth2/dcr/register`, on by default |
+| [Client ID metadata document](https://thunderid.dev/docs/next/guides/mcp/mcp-clients/client-id-metadata-document) | IETF draft (CIMD) | A URL as the `client_id`, on by default, advertised as `client_id_metadata_document_supported` |
 | [OpenID Connect](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/openid-connect), [UserInfo](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/userinfo) | OIDC Core 1.0 | ID token, `/oauth2/userinfo` |
 | [RP-initiated logout](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/rp-initiated-logout) | OIDC RP-Initiated Logout | `end_session_endpoint` |
 | [Back-channel logout](https://thunderid.dev/docs/next/guides/protocols/oauth-oidc/backchannel-logout) | OIDC Back-Channel Logout | Per-app `backchannelLogoutUri` |
@@ -45,7 +46,7 @@ Checked against the code on `main`.
 
 ## Not supported today
 
-- JWT-secured authorization requests (`request`, `request_uri`)
+- JWT-secured authorization requests (`request`, and a `request_uri` that isn't a PAR handle)
 - `client_secret_jwt` and mutual TLS client authentication
 - Response types other than `code`
 
