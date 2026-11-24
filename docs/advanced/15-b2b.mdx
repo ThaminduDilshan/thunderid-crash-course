@@ -55,7 +55,7 @@ The application, its two roles (`Wayfinder Admin` and `Wayfinder Member`) and it
 ## How the pieces fit
 
 - **One account, or one per company?** The **Organization Sign-up** template creates the admin's account inside the new company. The **Organization Sign-up with Shared Account** template keeps the account in the platform organization and shares it in, so the same person can later join other companies.
-- **Organization-aware tokens.** A sign-in lands in one organization, and the token carries `ouId`, `ouHandle` and `ouName`. Your API uses those to keep each company's data apart.
+- **Organization-aware tokens.** A sign-in lands in one organization, and the token carries `ouId`, `ouHandle` and `ouName` when the app lists them in its token attributes, as the Wayfinder Enterprise sample does. Your API uses those to keep each company's data apart.
 - **Signing in to a specific company.** An employee types their organization's handle (Ex: `initech`). ThunderID resolves it, reads that organization's value of `enterpriseIdp`, and redirects to Initech's IdP.
 - **You can only grant what you hold.** Assigning a role or adding a group member that would grant more than the caller holds fails with `403` and `SAZ-4030`.
 - **Switching without signing in again.** The SDK tries a device secret first (the `device_sso` scope), then a silent sign-in with `prompt=none`, and only then a full redirect to the other organization's sign-in.
