@@ -47,7 +47,7 @@ flowchart LR
   match -->|no| create([New user, if the flow allows it])
 ```
 
-ThunderID never links on a matching email alone. The user first proves they own the matched account. Otherwise anyone who controls an IdP that lets you claim any email address could take over someone else's account.
+Linking is a step you add to the flow (`AccountLinkingExecutor`). ThunderID never links on a matching email alone. The user first proves they own the matched account. Otherwise anyone who controls an IdP that lets you claim any email address could take over someone else's account.
 
 ## Notifications
 
@@ -58,7 +58,9 @@ There's no deployment-wide default sender. Each email or SMS step in a flow name
 ## 🧪 Lab
 
 1. Follow [Add Google](https://thunderid.dev/docs/next/guides/identity-providers/add-google) and [Connect an IdP to an application](https://thunderid.dev/docs/next/guides/identity-providers/connect-idp-to-application).
-2. Sign up with a password first, then sign in with Google using the same email address. Watch the link prompt.
+2. Follow [Link accounts](https://thunderid.dev/docs/next/guides/identity-providers/link-accounts) to add the account linking step to the app's sign-in flow. Without it, there's no link prompt.
+3. Turn on self sign-up for the app. The console wizard leaves it off ([module 9](/docs/next/intermediate/building-journeys#how-an-application-gets-its-flows)).
+4. Sign up with a password, then sign in with Google using the same email address. Watch the link prompt.
 
 :::info[🧭 Wayfinder step]
 

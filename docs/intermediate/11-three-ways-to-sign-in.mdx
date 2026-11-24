@@ -25,7 +25,7 @@ In [module 5](/docs/next/beginner/applications) your React app sent people to Th
 | What you get at the end | An authorization code, then tokens | An **assertion** JWT, exchanged for tokens with token exchange ([RFC 8693](https://datatracker.ietf.org/doc/html/rfc8693)) | An assertion JWT, exchanged the same way |
 | Fits | Any app that can redirect, including SPAs | Native mobile and confidential server-side apps | CLIs, scripts, server-to-server |
 
-Redirect-based and app-native run the **same flows** ([module 9](/docs/next/intermediate/building-journeys)), so a flow change reaches both. Gate itself is a client of the Flow Execution API: it's an app-native client that ThunderID ships for you.
+Redirect-based and app-native run the **same flows** ([module 9](/docs/next/intermediate/building-journeys)), so a flow change reaches both. Gate itself draws its screens from the Flow Execution API. It doesn't start sign-in on its own: `/oauth2/authorize` starts the flow, and Gate continues it.
 
 :::info[🧳 In Wayfinder]
 
@@ -35,11 +35,11 @@ Wayfinder's web app uses **redirect-based** sign-in with authorization code + PK
 
 ## Rules that trip people up
 
-- **Who may start a sign-in directly.** Browser and backend service (`m2m`) apps can never start an `AUTHENTICATION` or `SIGNOUT` flow on `/flow/execute`. Mobile apps need platform attestation (Play Integrity or App Attest), or Dev mode while testing. Full-stack, custom and MCP client apps need a `Flow-Secret` header when they qualify for one. Continuing a flow that's already running is always allowed, and registration and recovery are never restricted.
+- **Who may start a sign-in directly.** Browser and backend service (`m2m`) apps can never start an `AUTHENTICATION` or `SIGNOUT` flow on `/flow/execute`. Mobile apps need platform attestation (Play Integrity or App Attest), or Dev mode while testing. Full-stack, custom and MCP client apps can start one only with no OAuth settings, or with the token exchange grant and without `authorization_code`. They send their `Flow-Secret` header. Any other app is refused. Continuing a flow that's already running is always allowed, and registration and recovery are never restricted.
 - **Every step carries a `challengeToken`.** The server rotates it on every response. Send back the latest one or the step fails.
 - **Inputs are keyed by `identifier`.** Each input in a response has a `ref` and an `identifier`. When you post inputs back, use the `identifier` (Ex: `username`).
 - **No back button.** A flow only moves forward.
-- **The Direct API is off until you set a secret.** Calls to `/auth/**` need a `Direct-Auth-Secret` header matching `server.security.direct_auth_secret`. `setup.sh` generates one and prints it once. These endpoints have no rate limiting, so put an API gateway in front of them.
+- **The Direct API is off until you set a secret.** Calls to `/auth/**` need a `Direct-Auth-Secret` header matching `server.security.direct_auth_secret`. `setup.sh` generates one per data plane. These endpoints have no rate limiting, so put an API gateway in front of them.
 
 ## 🧪 Lab
 
@@ -59,7 +59,7 @@ The response lists the `inputs` to collect and the `actions` to choose from. Pos
 
 On `COMPLETE` the response carries an `assertion`. Run it again with `"verbose": true` and compare: `meta` is the component tree Gate draws.
 
-**Direct API.**
+**Direct API.** `setup.sh` printed two `Direct Auth Secret` lines: the first is `auth-dp`'s, the second is the data plane's. Use the data plane's, also stored in `dp/config/secrets/direct_auth_secret`.
 
 ```bash
 curl -sk -X POST $DP/auth/credentials/authenticate \

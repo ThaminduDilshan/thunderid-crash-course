@@ -32,6 +32,7 @@ flowchart TD
 
 - **Owned resources:** users, agents, applications, groups, roles, user and agent types, connections and resource servers. Every user, agent and app belongs to exactly one OU.
 - **Its own sign-in setup:** an OU can carry its own flows, theme, layout, logo and terms of service.
+- **Its project:** on the control plane, an OU belongs to a project, like applications and flows ([module 2](/docs/next/beginner/what-thunderid-is#how-configuration-is-organized)). A child OU doesn't inherit its parent's project, so each create names one.
 - **ID and handle:** every OU has a generated `id` and a human-friendly `handle`. A handle only has to be unique among its siblings, so a path like `acme/engineering` identifies an OU. `GET /organization-units/tree/{path}` resolves one.
 - **The system OU:** the bootstrap OU (handle `default`), set by `server.system_ou_id`. A resource that names no OU lands there. It can't be deleted, and no OU can be deleted while child OUs, users or groups still depend on it.
 
@@ -41,7 +42,7 @@ Every sign-in lands in exactly one OU, and both the user and the app must be fou
 
 - An app can name the OU with `/ou/{ouId}/oauth2/authorize` and `/ou/{ouId}/oauth2/token`, or with `ouId` on `/flow/execute`. These take the OU's ID, not its handle.
 - Or a **Resolve OU** step in the flow decides it after the user is identified. Put it before the Authorization step, so only that OU's role assignments count.
-- Tokens carry `ouId`, `ouHandle` and `ouName` claims, so your API knows which organization the caller is acting for.
+- Tokens can carry `ouId`, `ouHandle` and `ouName` claims, so your API knows which organization the caller is acting for. They're included only when the app lists them in its token attributes, and the `/ou/{ouId}` token endpoint needs `ouId` listed to redeem a code.
 
 ## Sharing across OUs
 
@@ -55,14 +56,31 @@ That's how one app serves many customer OUs without being copied. Groups are nev
 
 ## 🧪 Lab
 
+1. Find the `Default` project's ID. Every OU you create on the control plane needs one:
+
 ```bash
-curl -sk -X POST $CP/organization-units -H "Authorization: Bearer $TOKEN" \
-  -H 'Content-Type: application/json' -d '{"handle":"acme","name":"Acme","parent":null}'
+curl -sk $CP/projects -H "Authorization: Bearer $TOKEN" | jq
 ```
 
-1. Create a child under it with `"parent":"<acme-id>"`, then resolve it by path: `GET $CP/organization-units/tree/acme/<child-handle>`.
-2. In the console, share your React app into `acme`.
-3. Create a user in `acme` and sign in through `/ou/<acme-id>/oauth2/authorize`. Decode the token and find `ouHandle`.
+2. Create a top-level OU in that project:
+
+```bash
+curl -sk -X POST $CP/organization-units -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"handle":"acme","name":"Acme","parent":null,"projectId":"<project-id>"}'
+```
+
+3. Create a child with `"parent":"<acme-id>"` and the same `projectId`, then resolve it by path: `GET $CP/organization-units/tree/acme/<child-handle>`.
+4. A user type is only usable in its own OU and the units below it, and the bootstrap `Person` type belongs to `Default`. In the console's organization-wide view, create a user type owned by `acme`.
+5. In the console, share your React app into `acme`. Then, in the app's token settings, add `ouId` and `ouHandle` to the access token attributes.
+6. Create a user in `acme` with your new user type.
+7. Point your React app's sign-in at `acme`. With `@thunderid/react`, add the OU to the provider's sign-in options, and the SDK uses the `/ou/<acme-id>/oauth2/*` endpoints:
+
+```tsx
+signInOptions={{organizationUnitId: '<acme-id>'}}
+```
+
+8. Sign in as the new user. Decode the access token and find `ouHandle`.
 
 :::tip[Go further]
 
@@ -73,7 +91,8 @@ The [B2B sample](https://thunderid.dev/docs/next/use-cases/b2b/try-it-out) runs 
 ## Recap
 
 - An **OU** is a node in a tree that owns resources.
-- A sign-in lands in **one OU**, and the token names it.
+- On the control plane, every OU belongs to a **project**.
+- A sign-in lands in **one OU**, and the token can name it.
 - **Sharing** lets one app, user or role serve many OUs.
 
 Go deeper: [Manage organization units](https://thunderid.dev/docs/next/guides/organization-units/manage-organization-units), [Sign in to organization units](https://thunderid.dev/docs/next/guides/organization-units/sign-in-to-organization-units), [Resource sharing](https://thunderid.dev/docs/next/key-concepts/resource-sharing).
